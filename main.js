@@ -4834,7 +4834,7 @@ case 'todos': {
     const mentionIds = participants.map(p => p.id);
 
     await sock.sendMessage(chatId, {
-      image: { url: "https://cdn.russellxz.click/d6749a3e.jpeg" },
+      image: { url: "https://cdn.russellxz.click/c207ff27.jpeg" },
       caption: finalMsg,
       mentions: mentionIds
     }, { quoted: msg });
