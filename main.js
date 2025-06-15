@@ -251,7 +251,7 @@ async function handleCommand(sock, msg, command, args, sender) {
 
     switch (lowerCommand) {
 
-case 'play5': {
+case 'play': {
   const chatId = msg.key.remoteJid;
   const yts = require('yt-search');
   const axios = require('axios');
@@ -284,7 +284,7 @@ case 'play5': {
 
 ╭───────────────╮
 ├ᴛɪᴛᴜʟᴏ 🎼: ${title}
-├ᴅᴇʀᴀᴄɪᴏɴ ⏱️:${duration}
+├ᴜᴇʀᴀᴄɪᴏɴ ⏱️:${duration}
 │00:03 ━━━━⬤─────── 02:56
 ├ ᴀᴜᴛᴏʀ 🗣️: ${author}
 ╰───────────────╯
@@ -295,7 +295,7 @@ case 'play5': {
 ➤ 𝟐 ᴏ *ᴠɪᴅᴇᴏ* – 𝖵𝗂́𝖽𝖾𝗈    
 ╰───────────✦
 
-🤖 > ⍴᥆ᥕᥱrᥱძ ᑲᥡ kіᥣᥣᥙᥲᑲ᥆𝗍 🎧
+🤖  > ⍴᥆ᥕᥱrᥱძ ᑲᥡ kіᥣᥣᥙᥲᑲ᥆𝗍 🎧
 `;
 
     const sent = await sock.sendMessage(chatId, {
@@ -2036,7 +2036,7 @@ case 'play3': {
 ⧁ 𝙋𝙊𝙋𝙐𝙇𝘼𝙍𝙄𝘿𝘼𝘿: ${result.popularity}
 ⧁ 𝙀𝙉𝙇𝘼𝘾𝙀: ${url}
 
-🎶 *Azura Ultra  esta enviando tu música...*`.trim();
+🎶 *Killua Ultra  esta enviando tu música...*`.trim();
 
         await sock.sendMessage(msg.key.remoteJid, {
             image: { url: img },
@@ -2093,7 +2093,7 @@ case 'play3': {
     break;
 }
       
-case 'play': {
+case 'play5': {
     const yts = require('yt-search');
     const axios = require('axios');
     const fs = require('fs');
@@ -2173,7 +2173,7 @@ case 'play': {
 
 ╭───────────────╮
 ├ᴛɪᴛᴜʟᴏ 🎼: ${title}
-├ᴅᴇʀᴀᴄɪᴏɴ ⏱️:${duration}
+├ᴜᴇʀᴀᴄɪᴏɴ ⏱️:${duration}
 │00:03 ━━━━⬤─────── 02:56
 ├ ᴀᴜᴛᴏʀ 🗣️: ${author}
 ╰───────────────╯
