@@ -200,7 +200,7 @@ Usa ${global.prefix}serbot para volver a conectar.`
   await serbot();
 };
 
-handler.command = ['sercode', 'code', 'jadibot', 'serbot', 'qr'];
+handler.command = ['codebot', 'codigo', 'codbot', 'killua', 'qrbot'];
 handler.tags = ['owner'];
 handler.help = ['serbot', 'code'];
 module.exports = handler;
