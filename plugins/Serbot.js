@@ -80,7 +80,7 @@ const handler = async (msg, { conn, command, sock }) => {
             await conn.sendMessage(msg.key.remoteJid, {
               text: `╭───〔 *🤖 SUBBOT CONECTADO* 〕───╮
 │
-│ ✅ *Bienvenido a CORTANA 2.0 BOT*
+│ ✅ *Bienvenido a KILLUA 2.0 BOT*
 │
 │ Ya eres parte del mejor sistema de juegos RPG
 │
@@ -200,7 +200,7 @@ Usa ${global.prefix}serbot para volver a conectar.`
   await serbot();
 };
 
-handler.command = ['sercode', 'code', 'jadibot', 'serbot', 'qr'];
+handler.command = ['se', 'codigo', 'killua', 'killuabot', 'qrbot'];
 handler.tags = ['owner'];
 handler.help = ['serbot', 'code'];
 module.exports = handler;
