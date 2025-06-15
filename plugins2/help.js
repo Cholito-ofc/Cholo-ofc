@@ -92,13 +92,13 @@ const handler = async (msg, { conn }) => {
 ༆ ${usedPrefix}pong ↷
   Medir latencia del bot
 
-═⌬cortana 2.0 Subbot⌬═`;
+═⌬KilluaBot 2.0 Subbot⌬═`;
 
   // Mensaje principal con sendMessage2
 await conn.sendMessage(
   msg.key.remoteJid,
   {
-    image: { url: `https://cdn.russellxz.click/139f04e1.jpeg` },
+    image: { url: `https://cdn.russellxz.click/4cf35d4c.mp4` },
     caption: menu
   },
   { quoted: msg }
