@@ -60,7 +60,7 @@ const handler = async (msg, { conn }) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
   await conn.sendMessage(groupID, {
-    text: "✅ *Grupo autorizado correctamente.* Ahora el subbot responderá a todos los usuarios en este grupo. 💠"
+    text: "✅ *Grupo autorizado correctamente.* Ahora el bot responderá a todos los usuarios en este grupo. 💠"
   }, { quoted: msg });
 };
 
