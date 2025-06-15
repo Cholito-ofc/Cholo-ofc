@@ -280,31 +280,22 @@ case 'play': {
     const thumbnail = video.thumbnail;
 
     const info = `
-╭─╼⃝🌟 𝓒𝓞𝓡𝓣𝓐𝓝𝓐 2.0 𝓑𝓞𝓣 🌟╾⃝─╮
+╭─╼⃝🌟 𝖪𝗂𝗅𝗅𝗎𝖺𝖡𝗈𝗍 2.0 🌟╾⃝─╮
 
-🎼 𝓓𝓮𝓽𝓪𝓵𝓵𝓮𝓼 𝓭𝓮𝓵 𝓥𝓲𝓭𝓮𝓸:
+🎼 𝐷𝑒𝑡𝑎𝑙𝑙𝑒𝑠 𝑑𝑒 𝑡𝑢 𝑏𝑢́𝑠𝑞𝑢𝑒𝑑𝑎:
 ╭───────────────╮
-├ 🎶 𝓣í𝓽𝓾𝓵𝓸: ${title}
-├ ⏱️ 𝓓𝓾𝓻𝓪𝓬𝓲ó𝓷: ${duration}
-├ 👁️ 𝓥𝓲𝓼𝓽𝓪𝓼: ${views}
-├ 👤 𝓐𝓾𝓽𝓸𝓻: ${author}
-└ 🔗 𝓔𝓷𝓵𝓪𝓬𝓮: ${videoUrl}
+├ 🎶 Título: ${title}
+├ ⏱️ Duración: ${duration}
+├ 👤 Autor: ${author}
 ╰───────────────╯
 
-📥 𝓜𝓸𝓭𝓸 𝓿𝓲𝓻𝓽𝓾𝓪𝓵 𝓸 𝓽𝓮𝓻𝓶𝓾𝔁:
-┣ 🎧 𝓐𝓾𝓭𝓲𝓸: _${global.prefix}play5 boza hoy_
-┣ 📹 𝓥𝓲𝓭𝓮𝓸: _${global.prefix}play6 boza hoy_
-┗ ⚠️ 𝓢𝓲 𝓯𝓪𝓵𝓵𝓪, 𝓾𝓼𝓪: _${global.prefix}ff_
-
 ╭───────────✦
-✳️ 𝓟𝓪𝓻𝓪 𝓭𝓮𝓼𝓬𝓪𝓻𝓰𝓪 𝓭𝓲𝓻𝓮𝓬𝓽𝓪:
-➤ 𝟏 o *audio* – 𝓜𝓾𝓼𝓲𝓬𝓪  
-➤ 𝟐 o *video* – 𝓥𝓲𝓭𝓮𝓸  
-➤ 𝟑 o *musicadoc* – 𝓐𝓾𝓭𝓲𝓸 𝓭𝓸𝓬  
-➤ 𝟒 o *videodoc* – 𝓥𝓲𝓭𝓮𝓸 𝓭𝓸𝓬  
+✳️ 𝗉𝖺𝗋𝖺 𝖽𝖾𝗌𝖼𝖺𝗋𝗀𝖺 𝖽𝗂𝗋𝖾𝖼𝗍𝖺:
+➤ 𝟏 o *audio* – 𝖬𝗎́𝗌𝗂𝖼𝖺  
+➤ 𝟐 o *video* – 𝖵𝗂́𝖽𝖾𝗈    
 ╰───────────✦
 
-🤖 𝓒𝓸𝓻𝓽𝓪𝓷𝓪 2.0 – 𝓣𝓾 𝓑𝓸𝓽 𝓘𝓷𝓽𝓮𝓵𝓲𝓰𝓮𝓷𝓽𝓮 🎧
+🤖 𝓴𝓲𝓵𝓵𝓾𝓪𝓑𝓸𝓽 2.0 – 𝓣𝓾 𝓑𝓸𝓽 𝓘𝓷𝓽𝓮𝓵𝓲𝓰𝓮𝓷𝓽𝓮 🎧
 `;
 
     const sent = await sock.sendMessage(chatId, {
@@ -357,31 +348,22 @@ case 'play2': {
     const thumbnail = video.thumbnail;
 
     const info = `
-╭─╼⃝🌟 𝓒𝓞𝓡𝓣𝓐𝓝𝓐 2.0 𝓑𝓞𝓣 🌟╾⃝─╮
+╭─╼⃝🌟 𝖪𝗂𝗅𝗅𝗎𝖺𝖡𝗈𝗍 𝟤.𝟢 🌟╾⃝─╮
 
-🎼 𝓓𝓮𝓽𝓪𝓵𝓵𝓮𝓼 𝓭𝓮𝓵 𝓥𝓲𝓭𝓮𝓸:
+🎼 𝐷𝑒𝑡𝑎𝑙𝑙𝑒𝑠 𝑑𝑒 𝑡𝑢 𝑏𝑢́𝑠𝑞𝑢𝑒𝑑𝑎:
 ╭───────────────╮
-├ 🎶 𝓣í𝓽𝓾𝓵𝓸: ${title}
-├ ⏱️ 𝓓𝓾𝓻𝓪𝓬𝓲ó𝓷: ${duration}
-├ 👁️ 𝓥𝓲𝓼𝓽𝓪𝓼: ${views}
-├ 👤 𝓐𝓾𝓽𝓸𝓻: ${author}
-└ 🔗 𝓔𝓷𝓵𝓪𝓬𝓮: ${videoUrl}
+├ 🎶 𝖳𝗂́𝗍𝗎𝗅𝗈: ${𝗍𝗂𝗍𝗅𝖾}
+├ ⏱️ 𝖣𝗎𝗋𝖺𝖼𝗂𝗈́𝗇: ${𝖽𝗎𝗋𝖺𝗍𝗂𝗈𝗇}
+├ 👤 𝖠𝗎𝗍𝗈𝗋: ${𝖺𝗎𝗍𝗁𝗈𝗋}
 ╰───────────────╯
 
-📥 𝓜𝓸𝓭𝓸 𝓿𝓲𝓻𝓽𝓾𝓪𝓵 𝓸 𝓽𝓮𝓻𝓶𝓾𝔁:
-┣ 🎧 𝓐𝓾𝓭𝓲𝓸: _${global.prefix}play5 boza hoy_
-┣ 📹 𝓥𝓲𝓭𝓮𝓸: _${global.prefix}play6 boza hoy_
-┗ ⚠️ 𝓢𝓲 𝓯𝓪𝓵𝓵𝓪, 𝓾𝓼𝓪: _${global.prefix}ff_
-
 ╭───────────✦
-✳️ 𝓟𝓪𝓻𝓪 𝓭𝓮𝓼𝓬𝓪𝓻𝓰𝓪 𝓭𝓲𝓻𝓮𝓬𝓽𝓪:
-➤ 𝟏 o *audio* – 𝓜𝓾𝓼𝓲𝓬𝓪  
-➤ 𝟐 o *video* – 𝓥𝓲𝓭𝓮𝓸  
-➤ 𝟑 o *musicadoc* – 𝓐𝓾𝓭𝓲𝓸 𝓭𝓸𝓬  
-➤ 𝟒 o *videodoc* – 𝓥𝓲𝓭𝓮𝓸 𝓭𝓸𝓬  
+✳️ 𝗉𝖺𝗋𝖺 𝖽𝖾𝗌𝖼𝖺𝗋𝗀𝖺 𝖽𝗂𝗋𝖾𝖼𝗍𝖺:
+➤ 𝟏 𝗈 *𝖺𝗎𝖽𝗂𝗈* – 𝖬𝗎́𝗌𝗂𝖼𝖺  
+➤ 𝟐 𝗈 *𝗏𝗂𝖽𝖾𝗈* – 𝖵𝗂́𝖽𝖾𝗈    
 ╰───────────✦
 
-🤖 𝓒𝓸𝓻𝓽𝓪𝓷𝓪 2.0 – 𝓣𝓾 𝓑𝓸𝓽 𝓘𝓷𝓽𝓮𝓵𝓲𝓰𝓮𝓷𝓽𝓮 🎧
+🤖 𝓴𝓲𝓵𝓵𝓾𝓪𝓑𝓸𝓽 𝟤.𝟢 – 𝓣𝓾 𝓑𝓸𝓽 𝓘𝓷𝓽𝓮𝓵𝓲𝓰𝓮𝓷𝓽𝓮 🎧
 `;
 
     const sent = await sock.sendMessage(chatId, {
@@ -2188,29 +2170,21 @@ case 'play5': {
 
         const infoMessage = `
 ╔══════════════════╗
-║  ✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 BOT 2.0 ✦   
+║ ✦ 𝙆𝙄𝙇𝙇𝙐𝘼 𝙐𝙇𝙏𝙍𝘼 2.0 ✦   
 ╚══════════════════╝
 
 📀 *𝙄𝙣𝙛𝙤 𝙙𝙚𝙡 𝙫𝙞𝙙𝙚𝙤:*  
 ╭───────────────╮  
 ├ 🎼 *Título:* ${title}
 ├ ⏱️ *Duración:* ${timestamp}
-├ 👁️ *Vistas:* ${views.toLocaleString()}
 ├ 👤 *Autor:* ${author.name}
-└ 🔗 *Enlace:* ${url}
 ╰───────────────╯
 
-📥 *Opciones de Descarga:*  
-┣ 🎵 *Audio:* _${global.prefix}play5 ${text}_  
-┣ 🎵 *Audio de spotify:* _${global.prefix}play3 ${text}_
-┣ 🎥 *video:* _${global.prefix}play6 ${text}_  
-┗ 🎥 *Video:* _${global.prefix}play4 ${text}_
-
 ⏳ *Espera un momento...*  
-⚙️ *Azura Ultra 2.0 está procesando tu música...*
+⚙️ *Killua Ultra 2.0 está procesando tu música...*
 
 ═════════════════════  
-     𖥔 𝗞𝗶𝗹𝗹𝘂𝗮 𝗨𝗹𝘁𝗋𝗮 2.0 BOT 𖥔
+  𖥔 𝗞𝗶𝗹𝗹𝘂𝗮 𝗨𝗹𝘁𝗋𝗮 2.0 BOT 𖥔
 ═════════════════════`;
 
         await sock.sendMessage(msg.key.remoteJid, {
@@ -2374,16 +2348,8 @@ case 'play6': {
 ╭───────────────╮  
 ├ 🎼 *Título:* ${title}
 ├ ⏱️ *Duración:* ${timestamp}
-├ 👁️ *Vistas:* ${views.toLocaleString()}
 ├ 👤 *Autor:* ${author.name}
-└ 🔗 *Enlace:* ${url}
 ╰───────────────╯
-
-📥 *Opciones de Descarga:*  
-┣ 🎵 *Audio:* _${global.prefix}play ${text}_  
-┣ 🎵 *Audio de spotify:* _${global.prefix}play3 ${text}_
-┣ 🎥 *video:* _${global.prefix}play2 ${text}_
-┗ 🎥 *Video:* _${global.prefix}play6 ${text}_
 
 ⏳ *Espera un momento...*  
 ⚙️ *Killua Ultra 2.0 está procesando tu video...*
@@ -2441,7 +2407,7 @@ case 'play6': {
 
 Disfrútelo y continúe explorando el mundo digital.
 
-© Azura Ultra 2.0 Bot`;
+© Killua Ultra 2.0 Bot`;
 
         await sock.sendMessage(msg.key.remoteJid, {
             video: fs.readFileSync(finalPath),
@@ -13480,7 +13446,7 @@ case "s":
         // 🌟 Formato llamativo para la metadata del sticker 🌟
         let metadata = {
             packname: `✨ Lo Mandó Hacer: ${senderName} ✨`,
-            author: `🤖 Bot Creador: Cortana 2.0\n🛠️ Desarrollado por: 𝙍𝙪𝙨𝙨𝙚𝙡𝙡 xz💻\n${fechaCreacion}`
+            author: `🤖 Bot Creador: KilluaBot 2.0\n🛠️ Desarrollado por: 𝘾𝙝𝙤𝙡𝙞𝙩𝙤 𝙭𝙯💻\n${fechaCreacion}`
         };
 
         let stickerBuffer;
@@ -13780,19 +13746,19 @@ case 'info':
       react: { text: "ℹ️", key: msg.key }
     });
 
-    const infoMessage = `╭─ *🤖 CORTANA 2.0 BOT* ─╮
+    const infoMessage = `╭─ *🤖 𝗞𝗜𝗟𝗟𝗨𝗔 𝗕𝗢𝗧 𝟮.𝟬* ─╮
 │ 🔹 *Prefijo actual:* ${global.prefix}
-│ 👑 *Dueño:* Russell xz
+│ 👑 *Dueño:* 𝗖𝗵𝗼𝗹𝗶𝘁𝗼 𝘅𝘆𝘇
 │ 🛠️ *Bot desarrollado desde cero* con la ayuda de Chatgpt.
-│ 🚀 *Creado por:* Russell
+│ 🚀 *Creado por:* 𝗖𝗵𝗼𝗹𝗶𝘁𝗼
 │  
 ├─〔 📥 *Descargas Redes* 〕─
 │ 📌 *IG, TikTok y FB*  
-│    - 👤 *Colaboró:* DIEGO-OFC  
+│    - 👤 *Colaboró:* 𝗗𝗜𝗘𝗚𝗢-𝗢𝗙𝗖 
 │  
 │ 📌 *Descargas youtube*
 │     (.play, .play2, .ytmp3, .ytmp4)  
-│    - 👤 *Colaboró:* Eliasar54  
+│    - 👤 *Colaboró:* 𝗘𝗹𝗶𝗮𝘀𝗮𝗿𝟱𝟰  
 │  
 ├─〔 📜 *Menús y Comandos* 〕─
 │ 📌 Usa *${global.prefix}menu* para ver los comandos principales.  
@@ -13802,7 +13768,7 @@ case 'info':
 
     await sock.sendMessage2(msg.key.remoteJid,
   {
-    image: { url: "https://cdn.russellxz.click/8d278a49.jpeg" }, 
+    image: { url: "https://cdn.russellxz.click/fcf5ecd1.jpeg" }, 
     caption: infoMessage 
   },
   msg 
@@ -14173,8 +14139,8 @@ case "perfil": {
 
 case 'creador': {
     const ownerNumber = "50489513153@s.whatsapp.net"; // Número del dueño en formato WhatsApp
-    const ownerName = "𝘾𝙝𝙤𝙡𝙤 𝙭𝙮𝙯🤖"; // Nombre del dueño
-    const messageText = "📞 > *Contacto del Creador:*\n\nSi tienes dudas, preguntas o sugerencias sobre el bot, puedes contactar a mi creador.\n\n📌 *Nombre:* 𝗖𝗵𝗼𝗹𝗼\n📌 *Número:* +504 8951-3153\n💬 *Mensaje directo:* Pulsa sobre el contacto y chatea con él.";
+    const ownerName = "𝘾𝙝𝙤𝙡𝙞𝙩𝙤 𝙭𝙮𝙯🤖"; // Nombre del dueño
+    const messageText = "📞  *Contacto del Creador:*\n\nSi tienes dudas, preguntas o sugerencias sobre el bot, puedes contactar a mi creador.\n\n📌 *Nombre:* 𝗖𝗵𝗼𝗹𝗼\n📌 *Número:* +504 8951-3153\n💬 *Mensaje directo:* Pulsa sobre el contacto y chatea con él.";
 
     // Enviar mensaje con el contacto del dueño
     await sock.sendMessage(msg.key.remoteJid, {
