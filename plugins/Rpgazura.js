@@ -62,5 +62,5 @@ const handler = async (msg, { conn, args }) => {
   });
 };
 
-handler.command = ["rpgcortana"];
+handler.command = ["rpgkillua"];
 module.exports = handler;
