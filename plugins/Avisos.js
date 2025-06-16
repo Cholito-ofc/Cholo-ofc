@@ -26,7 +26,7 @@ ${usedPrefix + command} MiGrupo Hola a todos!`;
     let chats = await conn.groupFetchAllParticipating();
     let grupos = Object.values(chats);
 
-    // Busca por ID exacto o nombre (insensible a mayúsculas)
+    // Busca por ID exacto o por nombre (insensible a mayúsculas)
     let grupo = grupos.find(g => g.id === grupoArg);
     if (!grupo) grupo = grupos.find(g => g.subject && g.subject.toLowerCase().includes(grupoArg.toLowerCase()));
 
@@ -36,7 +36,9 @@ ${usedPrefix + command} MiGrupo Hola a todos!`;
 
     return m.reply(`✅ Aviso enviado al grupo: *${grupo.subject || grupo.id}*`);
   } catch (e) {
-    return m.reply('❌ Hubo un error ejecutando el comando. Verifica que el archivo esté en /plugins/ y que el nombre sea avisos.js (todo en minúsculas). Si el error continúa, revisa la consola.');
+    // Esto previene que el bot se apague por cualquier error
+    console.log('Error en el comando avisos:', e);
+    return m.reply('❌ Hubo un error ejecutando el comando. Revisa la consola.');
   }
 };
 
