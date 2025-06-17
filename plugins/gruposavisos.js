@@ -1,6 +1,6 @@
 // plugins/gruposavisos.js
 
-global.gruposAvisosCache = [] // Para que otros comandos accedan
+global.gruposAvisosCache = []
 
 const handler = async (msg, { conn }) => {
   const chatId = msg.key.remoteJid;
@@ -13,10 +13,10 @@ const handler = async (msg, { conn }) => {
     return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
   }
 
-  // Obtiene el ID del bot (sólo número)
+  // Normaliza el número del bot (solo dígitos)
   const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
 
-  let gruposMeta = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
+  let gruposMeta = Object.values(await (conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {}));
   let gruposBotAdmin = [];
   let debugMsg = '';
 
@@ -27,34 +27,48 @@ const handler = async (msg, { conn }) => {
       const botParticipant = metadata.participants.find(p =>
         p.id && p.id.replace(/[^0-9]/g, "") === botNumber
       );
-      // DEBUG: muestra si el bot está y si es admin
-      debugMsg += `\n[${metadata.subject}] Bot está en el grupo: ${!!botParticipant}, es admin: ${botParticipant?.admin}\n`;
+      // DEBUG opcional:
+      // debugMsg += `\n[${metadata.subject}] Bot está en el grupo: ${!!botParticipant}, es admin: ${botParticipant?.admin}\n`;
       if (botParticipant && (botParticipant.admin === "admin" || botParticipant.admin === "superadmin")) {
         gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
       }
-      await new Promise(res => setTimeout(res, 300)); // Evita sobrecarga si tienes muchos grupos
+      await new Promise(res => setTimeout(res, 200)); // pequeña pausa
     } catch (e) {
-      debugMsg += `\n[${group.id}] Error al obtener metadata: ${e.message}\n`;
+      // debugMsg += `\n[${group.id}] Error al obtener metadata: ${e.message}\n`;
       continue;
     }
   }
 
   if (gruposBotAdmin.length === 0) {
-    // Si quieres ver el debug, descomenta la siguiente línea
-    // return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo.*\n\nDEBUG:\n" + debugMsg }, { quoted: msg });
     return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo.*" }, { quoted: msg });
+    // Si quieres depurar, puedes enviar debugMsg también
+    // return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo.*\n\nDEBUG:\n" + debugMsg }, { quoted: msg });
   }
 
   global.gruposAvisosCache = gruposBotAdmin;
 
-  let listado = gruposBotAdmin.map((g, i) => `*${i + 1}.* ${g.subject}`).join('\n');
+  let listado = gruposBotAdmin.map((g, i) => `🔢 *${i + 1}.* ${g.subject}`).join('\n');
+  let cantidad = gruposBotAdmin.length;
+
+  let mensaje = `
+👥 *LISTA DE GRUPOS DONDE EL BOT ES ADMINISTRADOR*
+
+${listado}
+
+📊 *Total de grupos donde soy admin:* ${cantidad}
+
+✨ _Para enviar un aviso a un grupo específico, usa el comando:_ 
+*.aviso1 <mensaje>* para el primer grupo,
+*.aviso2 <mensaje>* para el segundo, etc.
+  `;
+
   conn.sendMessage(chatId, {
-    text: `*Grupos donde soy admin:*\n\n${listado}\n\nUsa *.aviso1 <mensaje>* para avisar al grupo 1, *.aviso2 <mensaje>* al 2, etc.`,
+    text: mensaje.trim(),
     quoted: msg
   });
 
-  // Si quieres ver el debug, descomenta la siguiente línea
-  // await conn.sendMessage(chatId, { text: "DEBUG:\n" + debugMsg.slice(0, 4096) }); // WhatsApp limita el tamaño, por si hay muchos grupos
+  // Si quieres ver el debug, descomenta la siguiente línea:
+  // await conn.sendMessage(chatId, { text: "DEBUG:\n" + debugMsg.slice(0, 4096) });
 };
 
 handler.command = ["gruposavisos"];
