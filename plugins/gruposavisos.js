@@ -1,61 +1,44 @@
-global.gruposAvisosCache = [];
+// plugins/gruposavisos.js
+
+global.gruposAvisosCache = [] // <- global para que otros comandos accedan
 
 const handler = async (msg, { conn }) => {
   const chatId = msg.key.remoteJid;
   const senderId = msg.key.participant || msg.key.remoteJid;
   const senderNum = senderId.replace(/[^0-9]/g, "");
-  const isOwner = (global.owner || []).some(([id]) => id === senderNum);
+  const isOwner = global.owner.some(([id]) => id === senderNum);
   const isFromMe = msg.key.fromMe;
 
   if (!isOwner && !isFromMe) {
     return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
   }
 
-  const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
+  // ID del bot normalizado (sólo números + @s.whatsapp.net)
+  const botId = (conn.user?.id || conn.user?.jid || "").split(":")[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net";
 
-  // Juntar TODOS los grupos posibles
-  let groupJids = [];
-  if (conn.chats) {
-    groupJids = Object.values(conn.chats)
-      .filter(c => c.id && c.id.endsWith("@g.us"))
-      .map(c => c.id);
-  }
-  if (typeof conn.groupFetchAllParticipating === "function") {
-    const more = Object.keys(await conn.groupFetchAllParticipating());
-    for (const id of more) if (!groupJids.includes(id)) groupJids.push(id);
-  }
-  groupJids = [...new Set(groupJids)];
-
+  let gruposMeta = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
   let gruposBotAdmin = [];
-  for (const groupId of groupJids) {
+
+  for (const group of gruposMeta) {
     try {
-      const metadata = await conn.groupMetadata(groupId);
-      const botParticipant = metadata.participants.find(
-        p => (p.id || p.jid || "").replace(/[^0-9]/g, "") === botNumber
+      const metadata = await conn.groupMetadata(group.id);
+      // Busca el bot entre los participantes (compara SÓLO los números, para evitar errores de sufijos)
+      const isAdmin = metadata.participants.some(p => 
+        p.id.replace(/[^0-9]/g, "") === botId.replace(/[^0-9]/g, "") && (p.admin === "admin" || p.admin === "superadmin")
       );
-      const isAdmin =
-        botParticipant &&
-        (
-          botParticipant.admin === "admin" ||
-          botParticipant.admin === "superadmin" ||
-          botParticipant.admin === true ||
-          botParticipant.admin === "true" ||
-          botParticipant.isAdmin === true
-        );
       if (isAdmin) {
-        gruposBotAdmin.push({ id: groupId, subject: metadata.subject });
+        gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
       }
-      await new Promise(res => setTimeout(res, 25));
     } catch (e) {
       continue;
     }
   }
 
-  if (!gruposBotAdmin.length) {
+  if (gruposBotAdmin.length === 0) {
     return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info correctamente.*" }, { quoted: msg });
   }
 
-  global.gruposAvisosCache = gruposBotAdmin;
+  global.gruposAvisosCache = gruposBotAdmin;  // Guarda la lista globalmente
 
   let listado = gruposBotAdmin.map((g, i) => `*${i + 1}.* ${g.subject}`).join('\n');
   conn.sendMessage(chatId, {
