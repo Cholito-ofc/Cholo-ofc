@@ -24,15 +24,17 @@ const handler = async (msg, { conn }) => {
     try {
       const metadata = await conn.groupMetadata(group.id);
 
-      // Obtiene lista de admins del grupo (siempre existe y es confiable)
-      let admins = metadata.participants.filter(p => p.admin).map(p => (p.id || "").replace(/[^0-9]/g, ""));
-
-      // Si el bot está en la lista de admins, lo agrega a la lista
-      if (admins.includes(botNumber)) {
+      // Obtiene la lista de administradores (siempre existe)
+      let adminIDs = metadata.participants
+        .filter(p => p.admin)
+        .map(p => (p.id || "").replace(/[^0-9]/g, ""));
+      
+      // Si el bot está en la lista de admins, lo agrega
+      if (adminIDs.includes(botNumber)) {
         gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
       }
 
-      await new Promise(res => setTimeout(res, 70));
+      await new Promise(res => setTimeout(res, 50)); // Pequeña pausa
     } catch (e) {
       continue;
     }
