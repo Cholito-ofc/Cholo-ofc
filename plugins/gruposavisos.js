@@ -1,82 +1,69 @@
 // plugins/gruposavisos.js
 
-global.gruposAvisosCache = [];
+// Base de datos persistente (puedes usar cualquier persistencia real si quieres)
+global.gruposAvisosDB = global.gruposAvisosDB || {};
 
-const handler = async (msg, { conn }) => {
+async function registrarGrupoSiAdmin(conn, groupId) {
   try {
-    const chatId = msg.key.remoteJid;
-    const senderId = msg.key.participant || msg.key.remoteJid;
-    const senderNum = senderId.replace(/[^0-9]/g, "");
-    const isOwner = (global.owner || []).some(([id]) => id === senderNum);
-    const isFromMe = msg.key.fromMe;
-
-    if (!isOwner && !isFromMe) {
-      return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
-    }
-
-    // Obtén el número del bot (solo dígitos)
+    const metadata = await conn.groupMetadata(groupId);
     const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
+    const botParticipant = metadata.participants.find(
+      p => (p.id || p.jid || "").replace(/[^0-9]/g, "") === botNumber
+    );
+    const isAdmin = botParticipant &&
+      (botParticipant.admin === "admin" ||
+       botParticipant.admin === "superadmin" ||
+       botParticipant.admin === true ||
+       botParticipant.admin === "true" ||
+       botParticipant.isAdmin === true);
 
-    // Junta TODOS los grupos conocidos, chat activos y groupFetchAllParticipating
-    let groupJids = [];
-    if (conn.chats) {
-      groupJids = Object.values(conn.chats)
-        .filter(c => c.id && c.id.endsWith("@g.us"))
-        .map(c => c.id);
+    if (isAdmin) {
+      global.gruposAvisosDB[groupId] = metadata.subject || "Sin Nombre";
+    } else {
+      delete global.gruposAvisosDB[groupId];
     }
+  } catch (e) {
+    // Grupo inaccesible o bot fuera
+    delete global.gruposAvisosDB[groupId];
+  }
+}
 
-    if (typeof conn.groupFetchAllParticipating === "function") {
-      const more = Object.keys(await conn.groupFetchAllParticipating());
-      for (const id of more) if (!groupJids.includes(id)) groupJids.push(id);
-    }
-
-    // Quita duplicados
-    groupJids = [...new Set(groupJids)];
-
-    let gruposBotAdmin = [];
-
-    for (const groupId of groupJids) {
-      try {
-        const metadata = await conn.groupMetadata(groupId);
-        // Busca el número del bot en la lista de participantes y si es admin (cubre todos los formatos)
-        const botParticipant = metadata.participants.find(
-          p => (p.id || p.jid || "").replace(/[^0-9]/g, "") === botNumber
-        );
-        const isAdmin =
-          botParticipant &&
-          (
-            botParticipant.admin === "admin" ||
-            botParticipant.admin === "superadmin" ||
-            botParticipant.admin === true ||
-            botParticipant.admin === "true" ||
-            botParticipant.isAdmin === true
-          );
-        if (isAdmin) {
-          gruposBotAdmin.push({ id: groupId, subject: metadata.subject });
-        }
-        await new Promise(res => setTimeout(res, 30)); // Pausa para evitar bloqueo
-      } catch (e) {
-        continue;
-      }
-    }
-
-    if (!gruposBotAdmin.length) {
-      return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info correctamente.*\n\nSi acabas de agregarme o dar admin, escribe algún mensaje en el grupo y vuelve a intentarlo." }, { quoted: msg });
-    }
-
-    global.gruposAvisosCache = gruposBotAdmin;
-
-    let listado = gruposBotAdmin.map((g, i) => `*${i + 1}.* ${g.subject}`).join('\n');
-    conn.sendMessage(chatId, {
-      text: `*Grupos donde soy admin:*\n\n${listado}\n\nUsa *.aviso1 <mensaje>* para avisar al grupo 1, *.aviso2 <mensaje>* al 2, etc.`,
-      quoted: msg
-    });
-  } catch (err) {
-    return conn.sendMessage(msg.key.remoteJid, { text: "❗ Error interno. Intenta de nuevo. Si sigue el error, escribe algo en cada grupo donde el bot es admin y repite el comando." }, { quoted: msg });
+// REGISTRA grupo cada vez que recibe un mensaje
+const groupRegisterHandler = async (msg, { conn }) => {
+  const groupId = msg.key.remoteJid;
+  if (groupId && groupId.endsWith("@g.us")) {
+    await registrarGrupoSiAdmin(conn, groupId);
   }
 };
+handler.all = groupRegisterHandler;
 
+// Comando para listar grupos donde el bot es admin
 handler.command = ["gruposavisos"];
 handler.tags = ["admin"];
 handler.help = ["gruposavisos"];
+handler.run = async (msg, { conn }) => {
+  const chatId = msg.key.remoteJid;
+  const senderId = msg.key.participant || msg.key.remoteJid;
+  const senderNum = senderId.replace(/[^0-9]/g, "");
+  const isOwner = (global.owner || []).some(([id]) => id === senderNum);
+  const isFromMe = msg.key.fromMe;
+
+  if (!isOwner && !isFromMe) {
+    return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
+  }
+
+  const gruposBotAdmin = Object.entries(global.gruposAvisosDB)
+    .map(([id, subject]) => ({ id, subject }));
+
+  if (!gruposBotAdmin.length) {
+    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no he sido registrado aún. Escribe un mensaje en el grupo donde soy admin.*" }, { quoted: msg });
+  }
+
+  global.gruposAvisosCache = gruposBotAdmin;
+  let listado = gruposBotAdmin.map((g, i) => `*${i + 1}.* ${g.subject}`).join('\n');
+  conn.sendMessage(chatId, {
+    text: `*Grupos donde soy admin:*\n\n${listado}\n\nUsa *.aviso1 <mensaje>* para avisar al grupo 1, *.aviso2 <mensaje>* al 2, etc.`,
+    quoted: msg
+  });
+};
 module.exports = handler;
