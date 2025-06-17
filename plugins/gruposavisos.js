@@ -14,25 +14,39 @@ const handler = async (msg, { conn }) => {
   // Consigue el número del bot (solo dígitos)
   const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
 
-  // Obtiene los grupos donde participa el bot
   let gruposMeta = Object.values(
     await (conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {})
   );
   let gruposBotAdmin = [];
-  let debugMsg = "";
+  let debugMsg = ""; // Para ver los valores reales
 
   for (const group of gruposMeta) {
     try {
       const metadata = await conn.groupMetadata(group.id);
-      // Busca al bot entre los participantes por número, ignora formato raro de JID
+      // Busca al bot entre los participantes
       const botParticipant = metadata.participants.find(p =>
         (p.id || "").replace(/[^0-9]/g, "") === botNumber
       );
-      debugMsg += `[${metadata.subject}] Bot está: ${!!botParticipant}, admin: ${botParticipant?.admin}\n`;
-      if (botParticipant && ["admin", "superadmin"].includes(botParticipant.admin)) {
+
+      // DEPURACIÓN: muestra cómo viene la info de admin
+      debugMsg += `[${metadata.subject}] Bot está: ${!!botParticipant}, admin: ${botParticipant?.admin}, isAdmin: ${botParticipant?.isAdmin}\n`;
+
+      // Haz true si el bot es admin según los posibles formatos
+      const esAdmin =
+        !!botParticipant &&
+        (
+          botParticipant.admin === "admin" ||
+          botParticipant.admin === "superadmin" ||
+          botParticipant.isAdmin === true ||
+          botParticipant.isAdmin === "true" ||
+          botParticipant.admin === true ||
+          botParticipant.admin === "true"
+        );
+
+      if (esAdmin) {
         gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
       }
-      await new Promise(res => setTimeout(res, 100)); // micro-pausa para evitar ban
+      await new Promise(res => setTimeout(res, 100));
     } catch (e) {
       debugMsg += `[${group.id}] Error: ${e.message}\n`;
       continue;
