@@ -1,9 +1,9 @@
-// plugins/desautorizargrupo.js
+// plugins/desautorizaciongrupos.js
 const fs = require("fs");
 const path = require("path");
 const file = path.resolve("./grupos_autorizados.json");
 
-// Filtro para que solo funcione en grupos y solo el owner pueda usarlo
+// Función para obtener la lista de grupos autorizados
 function getGruposAutorizados() {
   if (!fs.existsSync(file)) fs.writeFileSync(file, "[]");
   return JSON.parse(fs.readFileSync(file));
@@ -11,6 +11,20 @@ function getGruposAutorizados() {
 function setGruposAutorizados(arr) {
   fs.writeFileSync(file, JSON.stringify(arr, null, 2));
 }
+
+// FILTRO GLOBAL para que el plugin solo responda en grupos autorizados
+const before = async (msg, { conn }) => {
+  const chatId = msg.key.remoteJid;
+  const senderId = msg.key.participant || msg.key.remoteJid;
+  const senderNum = senderId.replace(/[^0-9]/g, "");
+  const isOwner = global.owner.some(([id]) => id === senderNum);
+
+  // Si es grupo, no está autorizado y no es el owner, no responde
+  if (chatId.endsWith("@g.us") && !isOwner) {
+    const grupos = getGruposAutorizados();
+    if (!grupos.includes(chatId)) return !0; // Esto evita la ejecución del comando
+  }
+};
 
 const handler = async (msg, { conn }) => {
   const chatId = msg.key.remoteJid;
@@ -39,20 +53,7 @@ const handler = async (msg, { conn }) => {
   }
 };
 
-// === FILTRO GLOBAL ===
-handler.before = async (msg, { conn }) => {
-  const chatId = msg.key.remoteJid;
-  const senderId = msg.key.participant || msg.key.remoteJid;
-  const senderNum = senderId.replace(/[^0-9]/g, "");
-  const isOwner = global.owner.some(([id]) => id === senderNum);
-
-  // Solo deja pasar si es privado o el grupo es autorizado o es el owner
-  if (chatId.endsWith("@g.us") && !isOwner) {
-    const grupos = getGruposAutorizados();
-    if (!grupos.includes(chatId)) return !0;
-  }
-};
-
+handler.before = before;
 handler.command = ["desautorizargrupo"];
 handler.tags = ["owner"];
 handler.help = ["desautorizargrupo"];
