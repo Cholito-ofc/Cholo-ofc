@@ -12,11 +12,9 @@ const handler = async (m, { conn }) => {
       return conn.sendMessage(chatId, { text: "❌ Solo el owner o el bot pueden usar este comando." }, { quoted: m });
     }
 
-    // Número del bot (solo dígitos)
+    // Obtiene el número del bot y muestra debug
     const botJid = conn.user?.id || conn.user?.jid || "";
     const botNumber = botJid.replace(/[^0-9]/g, "");
-
-    // Obtiene todos los grupos donde el bot está
     let gruposData = [];
     if (typeof conn.groupFetchAllParticipating === "function") {
       gruposData = Object.values(await conn.groupFetchAllParticipating());
@@ -24,35 +22,29 @@ const handler = async (m, { conn }) => {
       gruposData = Object.values(conn.chats).filter(v => v.id && v.id.endsWith("@g.us"));
     }
 
-    // DEBUG: muestra el número del bot y los grupos encontrados
-    let debugMsg = `🟩 *Número del bot:* ${botNumber} (JID: ${botJid})\n🟩 *Grupos detectados:* ${gruposData.length}\n\n`;
-
     let gruposBotAdmin = [];
+    let debugMsg = `🤖 *Número del bot:* ${botNumber}\n\n`;
+
     for (const group of gruposData) {
       let groupId = group.id || group.jid || group;
       try {
         const metadata = await conn.groupMetadata(groupId);
+        // Considera id o jid y cualquier valor de admin NO nulo/undefined
+        let admins = metadata.participants
+          .filter(p => p.admin !== null && p.admin !== undefined)
+          .map(p => ((p.id || p.jid || "").replace(/[^0-9]/g, "")));
 
-        // Lista de IDs de administradores
-        let adminIDs = metadata.participants
-          .filter(p => p.admin)
-          .map(p => (p.id || "").replace(/[^0-9]/g, ""));
+        debugMsg += `Grupo: ${metadata.subject}\nAdmins: [${admins.join(", ")}]\n`;
 
-        // DEBUG: muestra los admins de cada grupo
-        debugMsg += `🔹 *${metadata.subject || "Sin Nombre"}*\n`;
-        debugMsg += `  GroupID: ${groupId}\n`;
-        debugMsg += `  Admins: [${adminIDs.join(", ")}]\n`;
-
-        if (adminIDs.includes(botNumber)) {
+        if (admins.includes(botNumber)) {
           gruposBotAdmin.push({ id: groupId, subject: metadata.subject || "Sin Nombre" });
-          debugMsg += `  ✅ El bot es admin aquí\n\n`;
+          debugMsg += `✅ El bot es admin aquí\n\n`;
         } else {
-          debugMsg += `  ⛔️ El bot NO es admin aquí\n\n`;
+          debugMsg += `⛔ El bot NO es admin aquí\n\n`;
         }
-
         await new Promise(res => setTimeout(res, 40));
       } catch (e) {
-        debugMsg += `  ⚠️ Error al leer metadata: ${e.message}\n\n`;
+        debugMsg += `⚠️ Error al leer metadata: ${e.message}\n\n`;
         continue;
       }
     }
@@ -61,10 +53,8 @@ const handler = async (m, { conn }) => {
       return conn.sendMessage(chatId, { text: `🚫 El bot NO es admin en ningún grupo.\n\n${debugMsg}` }, { quoted: m });
     }
 
-    // Guarda la lista para otros comandos tipo .avisoN
     global.gruposAvisosCache = gruposBotAdmin;
 
-    // Mensaje personalizado y claro
     let mensaje = [
       "╔═══════════════════════════╗",
       "🤖 *GRUPOS DONDE EL BOT ES ADMIN* 🤖",
@@ -81,14 +71,11 @@ const handler = async (m, { conn }) => {
       "   *.aviso1 <mensaje>* para el primer grupo,",
       "   *.aviso2 <mensaje>* para el segundo, etc.",
       "",
-      "📝 *Si cambiaste de grupo o de admin, ejecuta este comando otra vez.*",
-      "",
       "🔬 *Debug info:*",
       debugMsg
     ].join('\n');
 
     return conn.sendMessage(chatId, { text: mensaje.trim(), quoted: m });
-
   } catch (err) {
     return conn.sendMessage(m.key.remoteJid, { text: "❗ Error interno al listar los grupos. Intenta de nuevo." }, { quoted: m });
   }
