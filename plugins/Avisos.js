@@ -1,30 +1,52 @@
-const { getGroupAdmins } = require('../lib/functions') // O usa tu propia función para obtener admins
+// plugins/avisos.js
+const handler = async (msg, { conn, args }) => {
+  const chatId = msg.key.remoteJid;
+  const senderId = msg.key.participant || msg.key.remoteJid;
+  const senderNum = senderId.replace(/[^0-9]/g, "");
+  const isOwner = global.owner.some(([id]) => id === senderNum);
+  const isFromMe = msg.key.fromMe;
 
-module.exports = {
-    name: 'avisos',
-    alias: ['anuncio', 'aviso'],
-    description: 'Envía un mensaje de aviso a todos los grupos donde el bot es admin.',
-    category: 'admin',
-    async run(m, { conn, text, usedPrefix, command }) {
-        if (!text) return m.reply(`*Ejemplo de uso:* ${usedPrefix}${command} [mensaje]\n\nEnvía el aviso a todos los grupos donde el bot es admin.`)
+  // Permite solo owner o el bot
+  if (!isOwner && !isFromMe) {
+    return conn.sendMessage(chatId, {
+      text: "🚫 *Solo el owner o el mismo bot pueden usar este comando.*"
+    }, { quoted: msg });
+  }
 
-        let chats = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : await conn.groupMetadata())
-        let grupos = chats.filter(v => v.id && v.participants) // Filtra grupos válidos
-        let enviados = 0
+  const aviso = args.join(" ").trim();
+  if (!aviso) {
+    return conn.sendMessage(chatId, {
+      text: "⚠️ *Escribe el mensaje del aviso.*\n\nEjemplo:\n.avisos Este es un aviso importante"
+    }, { quoted: msg });
+  }
 
-        for (let group of grupos) {
-            try {
-                let isBotAdmin = group.participants?.some(p => p.id === conn.user.id && p.admin)
-                if (isBotAdmin) {
-                    await conn.sendMessage(group.id, { text: `*AVISO:*\n${text}` }, { quoted: m })
-                    enviados++
-                }
-            } catch (e) {
-                // Si no puede enviar, lo ignora
-                continue
-            }
-        }
+  // Obtener todos los grupos donde el bot está
+  let grupos = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
+  let enviados = 0;
 
-        m.reply(`✅ Aviso enviado a ${enviados} grupo(s) donde el bot es admin.`)
+  for (const group of grupos) {
+    try {
+      // Revisa si el bot es admin en el grupo
+      const metadata = await conn.groupMetadata(group.id);
+      const isBotAdmin = metadata.participants.some(p => p.id === conn.user.id && (p.admin === "admin" || p.admin === "superadmin"));
+      if (isBotAdmin) {
+        await conn.sendMessage(group.id, { text: `*AVISO:*\n${aviso}` });
+        enviados++;
+        await new Promise(res => setTimeout(res, 1500)); // Evita spam y caídas
+      }
+    } catch (e) {
+      // Si falla en un grupo, ignora y sigue
+      continue;
     }
-}
+  }
+
+  return conn.sendMessage(chatId, {
+    text: `✅ *Aviso enviado a ${enviados} grupo(s) donde el bot es administrador.*`,
+    quoted: msg
+  });
+};
+
+handler.command = ["avisos"];
+handler.tags = ["admin"];
+handler.help = ["avisos <mensaje>"];
+module.exports = handler;
