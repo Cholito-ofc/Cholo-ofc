@@ -1,5 +1,3 @@
-// plugins/gruposavisos.js
-
 global.gruposAvisosCache = [];
 
 const handler = async (m, { conn }) => {
@@ -14,7 +12,7 @@ const handler = async (m, { conn }) => {
       return conn.sendMessage(chatId, { text: "❌ Solo el owner o el bot pueden usar este comando." }, { quoted: m });
     }
 
-    // Obtiene el número del bot en formato solo dígitos
+    // Número del bot (solo dígitos)
     const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
 
     // Obtiene todos los grupos donde el bot está
@@ -30,10 +28,9 @@ const handler = async (m, { conn }) => {
       let groupId = group.id || group.jid || group;
       try {
         const metadata = await conn.groupMetadata(groupId);
-        // Busca la lista de administradores
-        let admins = metadata.participants.filter(p => p.admin).map(p => (p.id || "").replace(/[^0-9]/g, ""));
-        // Si el bot está en la lista de admins, lo agrega
-        if (admins.includes(botNumber)) {
+        // Busca la lista de administradores (siempre existe)
+        let adminList = metadata.participants.filter(p => p.admin).map(p => (p.id || "").replace(/[^0-9]/g, ""));
+        if (adminList.includes(botNumber)) {
           gruposBotAdmin.push({ id: groupId, subject: metadata.subject || "Sin Nombre" });
         }
         await new Promise(res => setTimeout(res, 40)); // Pausa pequeña
