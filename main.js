@@ -3726,7 +3726,7 @@ case 'menuowner': {
 ┃➜ ${global.prefix}deletelista
 
 🔐 Solo para administradores autorizados.
-👨‍💻 Dev: 𝐂𝐡𝐨𝐥𝐨 𝐡𝐧`;
+👨‍💻 Dueño: 𝐂𝐡𝐨𝐥𝐨 𝐡𝐧`;
 
     await sock.sendMessage2(
       chatId,
