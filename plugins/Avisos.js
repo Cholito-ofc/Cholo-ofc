@@ -1,60 +1,64 @@
-const handler = async (msg, { conn, args }) => {
-  const chatId = msg.key.remoteJid;
-  const senderId = msg.key.participant || msg.key.remoteJid;
-  const senderNum = senderId.replace(/[^0-9]/g, "");
+const handler = async (msg, { conn, args, command }) => {
+  const sender = msg.key.participant || msg.key.remoteJid;
+  const senderNum = sender.replace(/[^0-9]/g, "");
   const isOwner = global.owner.some(([id]) => id === senderNum);
-  const isFromMe = msg.key.fromMe;
 
-  // Solo owner o el bot pueden usar este comando
-  if (!isOwner && !isFromMe) {
-    return conn.sendMessage(chatId, {
-      text: "🚫 *Solo el owner o el mismo bot pueden usar este comando.*"
+  if (!isOwner) {
+    return conn.sendMessage(msg.key.remoteJid, {
+      text: "❌ Solo *el dueño del bot* puede usar este comando."
     }, { quoted: msg });
   }
 
-  const aviso = args.join(" ").trim();
-  if (!aviso) {
-    return conn.sendMessage(chatId, {
-      text: "⚠️ *Escribe el mensaje del aviso.*\n\nEjemplo:\n.avisos Este es un aviso importante"
+  // Extrae número de comando: avisos1, avisos2, etc.
+  const index = parseInt(command.replace('avisos', ''));
+  if (isNaN(index)) {
+    return conn.sendMessage(msg.key.remoteJid, {
+      text: "❌ Usa un comando válido como *.avisos1* o *.avisos2*"
     }, { quoted: msg });
   }
 
-  let gruposMeta = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
-  let enviados = 0;
+  // Obtener lista de chats del bot
+  const chats = await conn.groupFetchAllParticipating();
+  const grupos = Object.values(chats);
 
-  // OBTÉN EL FORMATO DE ID DEL BOT
-  const botId = (conn.user?.id || conn.user?.jid || "").split(":")[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net";
-  //console.log("ID del bot que busco como admin:", botId);
-
-  for (const group of gruposMeta) {
+  // Filtrar solo donde el bot es admin
+  const gruposAdmin = [];
+  for (const grupo of grupos) {
     try {
-      const metadata = await conn.groupMetadata(group.id);
-      // BUSCA AL BOT ENTRE LOS PARTICIPANTES DEL GRUPO
-      const botParticipant = metadata.participants.find(p =>
-        (p.id === botId || p.id === conn.user.id || p.id === conn.user.jid) && (p.admin === "admin" || p.admin === "superadmin")
-      );
-      // DEBUG opcional:
-      //console.log("Analizando grupo:", group.subject, group.id);
-      //console.log("Bot está como:", botParticipant);
-
-      if (botParticipant) {
-        await conn.sendMessage(group.id, { text: `*AVISO:*\n${aviso}` });
-        enviados++;
-        await new Promise(resolve => setTimeout(resolve, 1200));
-      }
+      const meta = await conn.groupMetadata(grupo.id);
+      const yo = meta.participants.find(p => p.id === conn.user.id);
+      if (yo && yo.admin) gruposAdmin.push(grupo.id);
     } catch (e) {
-      //console.log("Error en grupo:", group.id, e);
       continue;
     }
   }
 
-  return conn.sendMessage(chatId, {
-    text: `✅ *Aviso enviado a ${enviados} grupo(s) donde el bot es administrador.*`,
-    quoted: msg
+  if (index > gruposAdmin.length || index < 1) {
+    return conn.sendMessage(msg.key.remoteJid, {
+      text: `❌ No hay un grupo número ${index} en la lista de grupos donde el bot es admin.\nActualmente hay ${gruposAdmin.length} grupos.`
+    }, { quoted: msg });
+  }
+
+  const texto = args.join(' ').trim();
+  if (!texto) {
+    return conn.sendMessage(msg.key.remoteJid, {
+      text: '✏️ Debes escribir un mensaje para enviar.\nEjemplo:\n*.avisos3 Torneo hoy a las 6PM.*'
+    }, { quoted: msg });
+  }
+
+  const destino = gruposAdmin[index - 1];
+
+  await conn.sendMessage(destino, {
+    text: `📣 *Aviso del dueño del bot:*\n\n${texto}`
   });
+
+  await conn.sendMessage(msg.key.remoteJid, {
+    text: `✅ Aviso enviado correctamente al grupo #${index}.`
+  }, { quoted: msg });
 };
 
-handler.command = ["avisos"];
-handler.tags = ["admin"];
-handler.help = ["avisos <mensaje>"];
+handler.command = [
+  /^avisos[1-9][0-9]*$/i  // acepta avisos1, avisos2, ..., avisos99+
+];
+
 module.exports = handler;
