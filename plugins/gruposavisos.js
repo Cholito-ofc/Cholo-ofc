@@ -1,4 +1,6 @@
-let gruposAvisosCache = [];
+// plugins/gruposavisos.js
+
+global.gruposAvisosCache = [] // <- global para que otros comandos accedan
 
 const handler = async (msg, { conn }) => {
   const chatId = msg.key.remoteJid;
@@ -11,29 +13,36 @@ const handler = async (msg, { conn }) => {
     return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
   }
 
+  // ID del bot normalizado (sólo números + @s.whatsapp.net)
+  const botId = (conn.user?.id || conn.user?.jid || "").split(":")[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+
   let gruposMeta = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
   let gruposBotAdmin = [];
+
   for (const group of gruposMeta) {
     try {
       const metadata = await conn.groupMetadata(group.id);
-      const botParticipant = metadata.participants.find(p =>
-        p.id === (conn.user?.id || conn.user?.jid) && (p.admin === "admin" || p.admin === "superadmin")
+      // Busca el bot entre los participantes (compara SÓLO los números, para evitar errores de sufijos)
+      const isAdmin = metadata.participants.some(p => 
+        p.id.replace(/[^0-9]/g, "") === botId.replace(/[^0-9]/g, "") && (p.admin === "admin" || p.admin === "superadmin")
       );
-      if (botParticipant) {
+      if (isAdmin) {
         gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
       }
-    } catch (e) { continue; }
+    } catch (e) {
+      continue;
+    }
   }
 
   if (gruposBotAdmin.length === 0) {
-    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo.*" }, { quoted: msg });
+    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info correctamente.*" }, { quoted: msg });
   }
 
-  gruposAvisosCache = gruposBotAdmin;  // Guarda la lista globalmente
+  global.gruposAvisosCache = gruposBotAdmin;  // Guarda la lista globalmente
 
   let listado = gruposBotAdmin.map((g, i) => `*${i + 1}.* ${g.subject}`).join('\n');
   conn.sendMessage(chatId, {
-    text: `*Grupos donde soy admin:*\n\n${listado}\n\nUsa *.aviso1 <mensaje>* para enviar un aviso al grupo 1, *.aviso2 <mensaje>* al 2, etc.`,
+    text: `*Grupos donde soy admin:*\n\n${listado}\n\nUsa *.aviso1 <mensaje>* para avisar al grupo 1, *.aviso2 <mensaje>* al 2, etc.`,
     quoted: msg
   });
 };
