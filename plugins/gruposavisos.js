@@ -1,4 +1,3 @@
-// plugins/gruposavisos.js
 global.gruposAvisosCache = [];
 
 const handler = async (m, { conn }) => {
@@ -14,9 +13,10 @@ const handler = async (m, { conn }) => {
     }
 
     // Número del bot (solo dígitos)
-    const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
+    const botJid = conn.user?.id || conn.user?.jid || "";
+    const botNumber = botJid.replace(/[^0-9]/g, "");
 
-    // Obtener todos los grupos donde el bot está
+    // Obtiene todos los grupos donde el bot está
     let gruposData = [];
     if (typeof conn.groupFetchAllParticipating === "function") {
       gruposData = Object.values(await conn.groupFetchAllParticipating());
@@ -24,26 +24,41 @@ const handler = async (m, { conn }) => {
       gruposData = Object.values(conn.chats).filter(v => v.id && v.id.endsWith("@g.us"));
     }
 
+    // DEBUG: muestra el número del bot y los grupos encontrados
+    let debugMsg = `🟩 *Número del bot:* ${botNumber} (JID: ${botJid})\n🟩 *Grupos detectados:* ${gruposData.length}\n\n`;
+
     let gruposBotAdmin = [];
-    // Recorrer todos los grupos y ver si el bot es admin usando la lista oficial de administradores
     for (const group of gruposData) {
       let groupId = group.id || group.jid || group;
       try {
         const metadata = await conn.groupMetadata(groupId);
+
         // Lista de IDs de administradores
         let adminIDs = metadata.participants
           .filter(p => p.admin)
           .map(p => (p.id || "").replace(/[^0-9]/g, ""));
-        // Si el número del bot está en los administradores, lo agregamos
+
+        // DEBUG: muestra los admins de cada grupo
+        debugMsg += `🔹 *${metadata.subject || "Sin Nombre"}*\n`;
+        debugMsg += `  GroupID: ${groupId}\n`;
+        debugMsg += `  Admins: [${adminIDs.join(", ")}]\n`;
+
         if (adminIDs.includes(botNumber)) {
           gruposBotAdmin.push({ id: groupId, subject: metadata.subject || "Sin Nombre" });
+          debugMsg += `  ✅ El bot es admin aquí\n\n`;
+        } else {
+          debugMsg += `  ⛔️ El bot NO es admin aquí\n\n`;
         }
-        await new Promise(res => setTimeout(res, 50)); // Pausa pequeña para evitar rate limit
-      } catch (e) { continue; }
+
+        await new Promise(res => setTimeout(res, 40));
+      } catch (e) {
+        debugMsg += `  ⚠️ Error al leer metadata: ${e.message}\n\n`;
+        continue;
+      }
     }
 
     if (!gruposBotAdmin.length) {
-      return conn.sendMessage(chatId, { text: "🚫 El bot NO es admin en ningún grupo." }, { quoted: m });
+      return conn.sendMessage(chatId, { text: `🚫 El bot NO es admin en ningún grupo.\n\n${debugMsg}` }, { quoted: m });
     }
 
     // Guarda la lista para otros comandos tipo .avisoN
@@ -66,7 +81,10 @@ const handler = async (m, { conn }) => {
       "   *.aviso1 <mensaje>* para el primer grupo,",
       "   *.aviso2 <mensaje>* para el segundo, etc.",
       "",
-      "📝 *Si cambiaste de grupo o de admin, ejecuta este comando otra vez.*"
+      "📝 *Si cambiaste de grupo o de admin, ejecuta este comando otra vez.*",
+      "",
+      "🔬 *Debug info:*",
+      debugMsg
     ].join('\n');
 
     return conn.sendMessage(chatId, { text: mensaje.trim(), quoted: m });
