@@ -6,29 +6,32 @@ const handler = async (msg, { conn }) => {
   const chatId = msg.key.remoteJid;
   const senderId = msg.key.participant || msg.key.remoteJid;
   const senderNum = senderId.replace(/[^0-9]/g, "");
-  const isOwner = global.owner.some(([id]) => id === senderNum);
+  const isOwner = (global.owner || []).some(([id]) => id === senderNum);
   const isFromMe = msg.key.fromMe;
 
   if (!isOwner && !isFromMe) {
     return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
   }
 
-  // Normaliza el ID del bot a solo números
+  // Normaliza el número del bot
   const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
 
-  // Busca TODOS los grupos en los chats conocidos (no solo los 5 activos)
+  // Saca TODOS los grupos donde está el bot (no solo los activos)
   const allChats = Object.values(conn.chats || {});
-  const groupJids = allChats.filter(c => c.id && c.id.endsWith("@g.us")).map(c => c.id);
+  const groupJids = allChats
+    .filter(c => c.id && c.id.endsWith("@g.us"))
+    .map(c => c.id);
 
   let gruposBotAdmin = [];
 
   for (const groupId of groupJids) {
     try {
       const metadata = await conn.groupMetadata(groupId);
-      // Encuentra al bot por número normalizado y verifica si es admin
+      // Busca el participante del bot
       const botParticipant = metadata.participants.find(
-        p => (p.id || "").replace(/[^0-9]/g, "") === botNumber
+        p => (p.id || p.jid || "").replace(/[^0-9]/g, "") === botNumber
       );
+      // Considera todas las formas posibles de admin
       const isAdmin =
         botParticipant &&
         (botParticipant.admin === "admin" ||
@@ -42,13 +45,13 @@ const handler = async (msg, { conn }) => {
       }
       await new Promise(res => setTimeout(res, 40)); // previene rate limit
     } catch (e) {
-      // Puede fallar si el bot fue expulsado de ese grupo, lo ignoramos
+      // Si no puede obtener metadata de un grupo, lo ignora
       continue;
     }
   }
 
-  if (gruposBotAdmin.length === 0) {
-    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info.*" }, { quoted: msg });
+  if (!gruposBotAdmin.length) {
+    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info correctamente.*" }, { quoted: msg });
   }
 
   global.gruposAvisosCache = gruposBotAdmin;
