@@ -57,7 +57,7 @@ const handler = async (msg, { conn, args, command }) => {
   }, { quoted: msg });
 };
 
-handler.command = [
+handler.command = ["avisoss"];
   /^avisos[1-9][0-9]*$/i  // acepta avisos1, avisos2, ..., avisos99+
 ];
 
