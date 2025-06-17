@@ -11,10 +11,10 @@ const handler = async (msg, { conn }) => {
     return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
   }
 
-  // Obtiene el número del bot (solo dígitos)
+  // Número del bot (solo dígitos)
   const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
 
-  // Obtiene todos los grupos
+  // Obtiene todos los grupos donde el bot está
   let gruposMeta = Object.values(
     await (conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {})
   );
@@ -24,26 +24,15 @@ const handler = async (msg, { conn }) => {
     try {
       const metadata = await conn.groupMetadata(group.id);
 
-      // Busca al bot por número (ignora formato de ID)
-      const botParticipant = metadata.participants.find(p =>
-        (p.id || "").replace(/[^0-9]/g, "") === botNumber
-      );
+      // Obtiene lista de admins del grupo (siempre existe y es confiable)
+      let admins = metadata.participants.filter(p => p.admin).map(p => (p.id || "").replace(/[^0-9]/g, ""));
 
-      // Determina si el bot es admin para distintas variantes
-      const esAdmin = !!botParticipant && (
-        botParticipant.admin === "admin" ||
-        botParticipant.admin === "superadmin" ||
-        botParticipant.isAdmin === true ||
-        botParticipant.isAdmin === "true" ||
-        botParticipant.admin === true ||
-        botParticipant.admin === "true"
-      );
-
-      if (esAdmin) {
+      // Si el bot está en la lista de admins, lo agrega a la lista
+      if (admins.includes(botNumber)) {
         gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
       }
 
-      await new Promise(res => setTimeout(res, 70)); // Pausa breve para evitar rate limit
+      await new Promise(res => setTimeout(res, 70));
     } catch (e) {
       continue;
     }
