@@ -1,64 +1,110 @@
-let handler = async (m, { command, args, usedPrefix }) => {
-  global.db.data.partidas = global.db.data.partidas || {};
-  let partida = global.db.data.partidas['4vs4'] || {
-    hora_mexico: '', hora_colombia: '', modalidad: '', jugadores: '',
-    escuadra1: [], suplentes: [], participantes: []
-  };
-  
-  let subcmd = args[0]?.toLowerCase();
+const handler = async (msg, { conn, args }) => {
+  const chatId = msg.key.remoteJid;
+  const sender = msg.key.participant || msg.key.remoteJid;
+  const senderNum = sender.replace(/[^0-9]/g, "");
+  const isOwner = global.owner.some(([id]) => id === senderNum);
+  const isFromMe = msg.key.fromMe;
 
-  if (subcmd === 'agregar') {
-    let tipo = args[1]?.toLowerCase();
-    let nombre = args.slice(2).join(' ');
-    if (!tipo || !nombre) return m.reply(`Ejemplo: ${usedPrefix + command} agregar escuadra NombreJugador`);
-    if (tipo === 'escuadra') {
-      if (partida.escuadra1.length >= 4) return m.reply('La escuadra ya tiene 4 jugadores.');
-      partida.escuadra1.push(nombre);
-    } else if (tipo === 'suplente') {
-      if (partida.suplentes.length >= 2) return m.reply('Ya hay 2 suplentes.');
-      partida.suplentes.push(nombre);
-    } else return m.reply('Tipo no válido. Usa "escuadra" o "suplente".');
-    partida.participantes.push(nombre);
-  } else if (subcmd === 'quitar') {
-    let nombre = args.slice(1).join(' ');
-    if (!nombre) return m.reply(`Ejemplo: ${usedPrefix + command} quitar NombreJugador`);
-    partida.escuadra1 = partida.escuadra1.filter(j => j !== nombre);
-    partida.suplentes = partida.suplentes.filter(j => j !== nombre);
-    partida.participantes = partida.participantes.filter(j => j !== nombre);
-  } else if (subcmd === 'set') {
-    let campo = args[1]?.toLowerCase();
-    let valor = args.slice(2).join(' ');
-    if (!campo || !valor) return m.reply(`Ejemplo: ${usedPrefix + command} set hora_mexico 20:00`);
-    if (['hora_mexico','hora_colombia','modalidad','jugadores'].includes(campo)) {
-      partida[campo] = valor;
-    } else return m.reply('Campo inválido.');
+  if (!chatId.endsWith("@g.us")) {
+    return conn.sendMessage(chatId, { text: "❌ Este comando solo puede usarse en grupos." }, { quoted: msg });
   }
 
-  global.db.data.partidas['4vs4'] = partida;
+  const meta = await conn.groupMetadata(chatId);
+  const isAdmin = meta.participants.find(p => p.id === sender)?.admin;
 
-  // Mostrar el formato
-  let txt = `⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎                   •
-🇲🇽 𝐌𝐄𝐗𝐈𝐂𝐎 : ${partida.hora_mexico}
-🇨🇴 𝐂𝐎𝐋𝐎𝐌𝐁𝐈𝐀 : ${partida.hora_colombia}
+  if (!isAdmin && !isOwner && !isFromMe) {
+    return conn.sendMessage(chatId, {
+      text: "❌ Solo *admins* o *el dueño del bot* pueden usar este comando."
+    }, { quoted: msg });
+  }
 
-➥ 𝐌𝐎𝐃𝐀𝐋𝐈𝐃𝐀𝐃: ${partida.modalidad}
-➥ 𝐉𝐔𝐆𝐀𝐃𝐎𝐑𝐄𝐒: ${partida.jugadores}
+  const horaTexto = args.join(" ").trim();
+  if (!horaTexto) {
+    return conn.sendMessage(chatId, {
+      text: "✳️ Usa el comando así:\n*.4vs4 [hora]*\nEjemplo: *.4vs4 5:00pm*"
+    }, { quoted: msg });
+  }
 
-      𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 1
-${partida.escuadra1.map((j, i) => i==0 ? `    👑 ┇ ${j}` : `    🥷🏻 ┇ ${j}`).join('\n')}${'\n'.repeat(4 - partida.escuadra1.length)}
+  // Convertir la hora ingresada a formato 24h base México
+  const to24Hour = (str) => {
+    let [time, modifier] = str.toLowerCase().split(/(am|pm)/);
+    let [h, m] = time.split(":").map(n => parseInt(n));
+    if (modifier === 'pm' && h !== 12) h += 12;
+    if (modifier === 'am' && h === 12) h = 0;
+    return { h, m: m || 0 };
+  };
 
-    ʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:
-${partida.suplentes.map(j => `    🥷🏻 ┇ ${j}`).join('\n')}${'\n'.repeat(2 - partida.suplentes.length)}
+  const to12Hour = (h, m) => {
+    const suffix = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return `${h}:${m.toString().padStart(2, '0')}${suffix}`;
+  };
 
-𝗣𝗔𝗥𝗧𝗜𝗖𝗜𝗣𝗔𝗡𝗧𝗘𝗦 𝗔𝗡𝗢𝗧𝗔𝗗𝗢𝗦:
-${partida.participantes.length ? partida.participantes.join('\n') : 'Ninguno aún.'}
-`;
+  const base = to24Hour(horaTexto);
 
-  m.reply(txt);
+  const zonas = [
+    { pais: "🇲🇽 MÉXICO", offset: 0 },
+    { pais: "🇨🇴 COLOMBIA", offset: 0 },
+    { pais: "🇵🇪 PERÚ", offset: 0 },
+    { pais: "🇵🇦 PANAMÁ", offset: 0 },
+    { pais: "🇸🇻 EL SALVADOR", offset: 0 },
+    { pais: "🇨🇱 CHILE", offset: 2 },
+    { pais: "🇦🇷 ARGENTINA", offset: 2 },
+    { pais: "🇪🇸 ESPAÑA", offset: 7 }
+  ];
+
+  const horaMsg = zonas.map(z => {
+    let newH = base.h + z.offset;
+    let newM = base.m;
+    if (newH >= 24) newH -= 24;
+    return `${z.pais} : ${to12Hour(newH, newM)}`;
+  }).join("\n");
+
+  await conn.sendMessage(chatId, { react: { text: '🎮', key: msg.key } });
+
+  const participantes = meta.participants.filter(p => p.id !== conn.user.id);
+  if (participantes.length < 12) {
+    return conn.sendMessage(chatId, {
+      text: "⚠️ Se necesitan al menos *12 usuarios* para formar 2 escuadras y suplentes."
+    }, { quoted: msg });
+  }
+
+  const tempMsg = await conn.sendMessage(chatId, {
+    text: "🎮 Preparando escuadras de Free Fire..."
+  }, { quoted: msg });
+
+  const pasos = [
+    "🧠 Pensando estrategias...",
+    "🎲 Mezclando nombres...",
+    "📊 Seleccionando jugadores...",
+    "✅ ¡Listo! Escuadras generadas:"
+  ];
+
+  for (let i = 0; i < pasos.length; i++) {
+    await new Promise(r => setTimeout(r, 1500));
+    await conn.sendMessage(chatId, {
+      edit: tempMsg.key,
+      text: pasos[i]
+    });
+  }
+
+  const shuffled = participantes.sort(() => Math.random() - 0.5);
+  const escuadra1 = shuffled.slice(0, 4);
+  const escuadra2 = shuffled.slice(4, 8);
+  const suplentes = shuffled.slice(8, 12);
+
+  const renderJugadores = (arr) => arr.map((u, i) => `${i === 0 ? "👑" : "🥷🏻"} ┇ @${u.id.split("@")[0]}`).join("\n");
+
+  const textoFinal = `*4 𝐕𝐄𝐑𝐒𝐔𝐒 4*\n\n⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎\n${horaMsg}\n\n➥ 𝐌𝐎𝐃𝐀𝐋𝐈𝐃𝐀𝐃: 🔫 Clásico\n➥ 𝐉𝐔𝐆𝐀𝐃𝐎𝐑𝐄𝐒:\n\n      𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 1\n\n${renderJugadores(escuadra1)}\n\n    ㅤʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:\n${renderJugadores(suplentes.slice(0, 2))}\n\n     𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 2\n\n${renderJugadores(escuadra2)}\n\n    ㅤʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:\n${renderJugadores(suplentes.slice(2))}`;
+
+  const mentions = [...escuadra1, ...escuadra2, ...suplentes].map(p => p.id);
+
+  await conn.sendMessage(chatId, {
+    edit: tempMsg.key,
+    text: textoFinal,
+    mentions
+  });
 };
 
-handler.help = ['4vs4'].map(v => v + ' [agregar/quitar/set]');
-handler.tags = ['games'];
-handler.command = /^4vs4$/i;
-
+handler.command = ['4vs4'];
 module.exports = handler;
