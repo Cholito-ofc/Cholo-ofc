@@ -13,45 +13,45 @@ const handler = async (msg, { conn }) => {
     return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
   }
 
-  // Normaliza el número del bot
+  // Obtén el número del bot (solo dígitos)
   const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
 
-  // Saca TODOS los grupos donde está el bot (no solo los activos)
+  // Recorre TODOS los chats conocidos (no solo los activos)
   const allChats = Object.values(conn.chats || {});
-  const groupJids = allChats
-    .filter(c => c.id && c.id.endsWith("@g.us"))
-    .map(c => c.id);
+  const groupJids = allChats.filter(c => c.id && c.id.endsWith("@g.us")).map(c => c.id);
 
   let gruposBotAdmin = [];
 
   for (const groupId of groupJids) {
     try {
       const metadata = await conn.groupMetadata(groupId);
-      // Busca el participante del bot
+      // Busca al bot entre los participantes, usando todos los formatos posibles
       const botParticipant = metadata.participants.find(
-        p => (p.id || p.jid || "").replace(/[^0-9]/g, "") === botNumber
+        p =>
+          ((p.id || p.jid || "").replace(/[^0-9]/g, "") === botNumber)
       );
-      // Considera todas las formas posibles de admin
+      // Considera cualquier valor de admin válido
       const isAdmin =
         botParticipant &&
-        (botParticipant.admin === "admin" ||
-         botParticipant.admin === "superadmin" ||
-         botParticipant.admin === true ||
-         botParticipant.admin === "true" ||
-         botParticipant.isAdmin === true);
-
+        (
+          botParticipant.admin === "admin" ||
+          botParticipant.admin === "superadmin" ||
+          botParticipant.admin === true ||
+          botParticipant.admin === "true" ||
+          botParticipant.isAdmin === true
+        );
       if (isAdmin) {
         gruposBotAdmin.push({ id: groupId, subject: metadata.subject });
       }
-      await new Promise(res => setTimeout(res, 40)); // previene rate limit
+      await new Promise(res => setTimeout(res, 30)); // Pausa para evitar bloqueo
     } catch (e) {
-      // Si no puede obtener metadata de un grupo, lo ignora
+      // Si el grupo no existe o no puede obtener metadata, continúa
       continue;
     }
   }
 
   if (!gruposBotAdmin.length) {
-    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info correctamente.*" }, { quoted: msg });
+    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info correctamente.*\n\nSi acabas de agregarme o dar admin, escribe algún mensaje en el grupo y vuelve a intentar." }, { quoted: msg });
   }
 
   global.gruposAvisosCache = gruposBotAdmin;
