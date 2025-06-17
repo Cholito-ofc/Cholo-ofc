@@ -1,4 +1,3 @@
-// plugins/avisos.js
 const handler = async (msg, { conn, args }) => {
   const chatId = msg.key.remoteJid;
   const senderId = msg.key.participant || msg.key.remoteJid;
@@ -6,7 +5,7 @@ const handler = async (msg, { conn, args }) => {
   const isOwner = global.owner.some(([id]) => id === senderNum);
   const isFromMe = msg.key.fromMe;
 
-  // Permite solo owner o el bot
+  // Solo owner o el bot pueden usar este comando
   if (!isOwner && !isFromMe) {
     return conn.sendMessage(chatId, {
       text: "🚫 *Solo el owner o el mismo bot pueden usar este comando.*"
@@ -26,13 +25,15 @@ const handler = async (msg, { conn, args }) => {
 
   for (const group of grupos) {
     try {
-      // Revisa si el bot es admin en el grupo
+      // Revisar si el bot es admin en el grupo
       const metadata = await conn.groupMetadata(group.id);
-      const isBotAdmin = metadata.participants.some(p => p.id === conn.user.id && (p.admin === "admin" || p.admin === "superadmin"));
-      if (isBotAdmin) {
+      const botParticipant = metadata.participants.find(p => 
+        (p.id === conn.user?.id || p.id === conn.user?.jid) && (p.admin === "admin" || p.admin === "superadmin")
+      );
+      if (botParticipant) {
         await conn.sendMessage(group.id, { text: `*AVISO:*\n${aviso}` });
         enviados++;
-        await new Promise(res => setTimeout(res, 1500)); // Evita spam y caídas
+        await new Promise(resolve => setTimeout(resolve, 1500));
       }
     } catch (e) {
       // Si falla en un grupo, ignora y sigue
