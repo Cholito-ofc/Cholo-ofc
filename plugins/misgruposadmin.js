@@ -1,37 +1,20 @@
 const handler = async (m, { conn }) => {
-  let texto = '';
-  let gruposAdmin = [];
-  try {
-    // 1. Carga todos los grupos donde el bot está presente
-    let grupos = await conn.groupFetchAllParticipating();
-    let botJid = conn.decodeJid ? conn.decodeJid(conn.user.id) : (conn.user.jid || conn.user.id);
+  let grupos = await conn.groupFetchAllParticipating();
+  let botNumber = (conn.user.id.split(':')[0]).replace(/[^0-9]/g, '') + '@s.whatsapp.net'; // más seguro
+  let adminGroups = [];
 
-    for (const [jid, group] of Object.entries(grupos)) {
-      // 2. Asegura que la propiedad participants existe y está cargada
-      if (!group.participants) continue;
-      // 3. Busca al bot entre los participantes y verifica si es admin o superadmin
-      let bot = group.participants.find(u =>
-        u.id === botJid ||
-        (botJid && botJid.includes(u.id.split('@')[0]))
-      );
-      if (bot && (bot.admin === 'admin' || bot.admin === 'superadmin')) {
-        gruposAdmin.push({
-          name: group.subject,
-          id: group.id
-        });
-      }
+  for (const [jid, group] of Object.entries(grupos)) {
+    let bot = group.participants.find(u => u.id === botNumber);
+    if (bot && (bot.admin === 'admin' || bot.admin === 'superadmin')) {
+      adminGroups.push({ name: group.subject, id: group.id });
     }
-  } catch (e) {
-    return m.reply('❌ Error al obtener los grupos. ¿El bot está actualizado y en grupos?');
   }
 
-  if (!gruposAdmin.length) {
-    return m.reply('❌ No soy administrador en ningún grupo.');
-  }
+  if (!adminGroups.length) return m.reply('❌ No soy administrador en ningún grupo.');
 
-  texto = gruposAdmin.map((g, i) => `*${i + 1}.* ${g.name}\nID: ${g.id}`).join('\n\n');
-  m.reply(`👑 *Grupos donde soy admin:*\n\n${texto}\n\n*Usa el número e ID para comandos de aviso global si los quieres usar.*`);
+  let texto = adminGroups.map((g, i) => `*${i + 1}.* ${g.name}\nID: ${g.id}`).join('\n\n');
+  return m.reply(`👑 *Grupos donde soy admin:*\n\n${texto}`, m);
 };
 
-handler.command = ["misgruposadmin"];
+handler.command = ['misgruposadmin'];
 module.exports = handler;
