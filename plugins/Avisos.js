@@ -19,24 +19,31 @@ const handler = async (msg, { conn, args }) => {
     }, { quoted: msg });
   }
 
-  // Obtener todos los grupos donde el bot está
-  let grupos = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
+  let gruposMeta = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
   let enviados = 0;
 
-  for (const group of grupos) {
+  // OBTÉN EL FORMATO DE ID DEL BOT
+  const botId = (conn.user?.id || conn.user?.jid || "").split(":")[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+  //console.log("ID del bot que busco como admin:", botId);
+
+  for (const group of gruposMeta) {
     try {
-      // Revisar si el bot es admin en el grupo
       const metadata = await conn.groupMetadata(group.id);
-      const botParticipant = metadata.participants.find(p => 
-        (p.id === conn.user?.id || p.id === conn.user?.jid) && (p.admin === "admin" || p.admin === "superadmin")
+      // BUSCA AL BOT ENTRE LOS PARTICIPANTES DEL GRUPO
+      const botParticipant = metadata.participants.find(p =>
+        (p.id === botId || p.id === conn.user.id || p.id === conn.user.jid) && (p.admin === "admin" || p.admin === "superadmin")
       );
+      // DEBUG opcional:
+      //console.log("Analizando grupo:", group.subject, group.id);
+      //console.log("Bot está como:", botParticipant);
+
       if (botParticipant) {
         await conn.sendMessage(group.id, { text: `*AVISO:*\n${aviso}` });
         enviados++;
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 1200));
       }
     } catch (e) {
-      // Si falla en un grupo, ignora y sigue
+      //console.log("Error en grupo:", group.id, e);
       continue;
     }
   }
