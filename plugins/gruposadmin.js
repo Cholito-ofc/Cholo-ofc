@@ -1,23 +1,34 @@
-const handler = async (msg, { conn, args }) => {
-  let groupId = args[0];
-  let texto = args.slice(1).join(' ');
+const handler = async (msg, { conn }) => {
+  const chats = Object.values(await conn.chats.all());
+  let groupIds = chats.filter(c => c.id.endsWith("@g.us")).map(c => c.id);
 
-  if (!groupId || !groupId.endsWith("@g.us") || !texto) {
+  let adminGroups = [];
+  for (let id of groupIds) {
+    let metadata;
+    try {
+      metadata = await conn.groupMetadata(id);
+    } catch (e) {
+      continue; // por si el bot ya no está en el grupo
+    }
+    let isBotAdmin = metadata.participants.find(p => p.id === conn.user.jid)?.admin;
+    if (isBotAdmin) {
+      adminGroups.push({
+        name: metadata.subject,
+        id: id
+      });
+    }
+  }
+
+  if (!adminGroups.length) {
     return conn.sendMessage(msg.key.remoteJid, {
-      text: "⚠️ Uso: !avisogrupo [ID del grupo] [mensaje]\n\nPuedes obtener los ID usando !misgruposadmin"
+      text: "❌ No soy administrador en ningún grupo."
     }, { quoted: msg });
   }
 
-  try {
-    await conn.sendMessage(groupId, { text: texto });
-    conn.sendMessage(msg.key.remoteJid, {
-      text: "✅ Aviso enviado correctamente."
-    }, { quoted: msg });
-  } catch (e) {
-    conn.sendMessage(msg.key.remoteJid, {
-      text: "❌ No se pudo enviar el aviso. ¿El bot sigue en ese grupo?"
-    }, { quoted: msg });
-  }
+  let lista = adminGroups.map((g, i) => `*${i+1}.* ${g.name}\nID: ${g.id}`).join('\n\n');
+  conn.sendMessage(msg.key.remoteJid, {
+    text: `👑 *Grupos donde soy admin:*\n\n${lista}`
+  }, { quoted: msg });
 };
-handler.command = ["avisogrupo"];
+handler.command = ["misgruposadmin"];
 module.exports = handler;
