@@ -11,44 +11,40 @@ const handler = async (msg, { conn }) => {
     return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
   }
 
-  // Consigue el número del bot (solo dígitos)
+  // Obtiene el número del bot (solo dígitos)
   const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
 
+  // Obtiene todos los grupos
   let gruposMeta = Object.values(
     await (conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {})
   );
   let gruposBotAdmin = [];
-  let debugMsg = ""; // Para ver los valores reales
 
   for (const group of gruposMeta) {
     try {
       const metadata = await conn.groupMetadata(group.id);
-      // Busca al bot entre los participantes
+
+      // Busca al bot por número (ignora formato de ID)
       const botParticipant = metadata.participants.find(p =>
         (p.id || "").replace(/[^0-9]/g, "") === botNumber
       );
 
-      // DEPURACIÓN: muestra cómo viene la info de admin
-      debugMsg += `[${metadata.subject}] Bot está: ${!!botParticipant}, admin: ${botParticipant?.admin}, isAdmin: ${botParticipant?.isAdmin}\n`;
-
-      // Haz true si el bot es admin según los posibles formatos
-      const esAdmin =
-        !!botParticipant &&
-        (
-          botParticipant.admin === "admin" ||
-          botParticipant.admin === "superadmin" ||
-          botParticipant.isAdmin === true ||
-          botParticipant.isAdmin === "true" ||
-          botParticipant.admin === true ||
-          botParticipant.admin === "true"
-        );
+      // Determina si el bot es admin para distintas variantes
+      const esAdmin = !!botParticipant && (
+        botParticipant.admin === "admin" ||
+        botParticipant.admin === "superadmin" ||
+        botParticipant.isAdmin === true ||
+        botParticipant.isAdmin === "true" ||
+        botParticipant.admin === true ||
+        botParticipant.admin === "true"
+      );
 
       if (esAdmin) {
         gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
       }
-      await new Promise(res => setTimeout(res, 100));
+
+      await new Promise(res => setTimeout(res, 70)); // Pausa breve para evitar rate limit
     } catch (e) {
-      debugMsg += `[${group.id}] Error: ${e.message}\n`;
       continue;
     }
   }
@@ -56,7 +52,7 @@ const handler = async (msg, { conn }) => {
   if (gruposBotAdmin.length === 0) {
     return conn.sendMessage(
       chatId, 
-      { text: "❌ *No estoy como admin en ningún grupo.*\n\nDEBUG:\n" + debugMsg }, 
+      { text: "❌ *No estoy como admin en ningún grupo.*" }, 
       { quoted: msg }
     );
   }
@@ -81,9 +77,6 @@ ${listado}
 Usa el comando:
   *.aviso1 <mensaje>* para el primer grupo,
   *.aviso2 <mensaje>* para el segundo, etc.
-
-DEBUG:
-${debugMsg}
 `;
 
   conn.sendMessage(chatId, {
