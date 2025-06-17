@@ -1,3 +1,4 @@
+// plugins/gruposavisos.js
 global.gruposAvisosCache = [];
 
 const handler = async (m, { conn }) => {
@@ -15,7 +16,7 @@ const handler = async (m, { conn }) => {
     // Número del bot (solo dígitos)
     const botNumber = (conn.user?.id || conn.user?.jid || "").replace(/[^0-9]/g, "");
 
-    // Obtiene todos los grupos donde el bot está
+    // Obtener todos los grupos donde el bot está
     let gruposData = [];
     if (typeof conn.groupFetchAllParticipating === "function") {
       gruposData = Object.values(await conn.groupFetchAllParticipating());
@@ -24,16 +25,20 @@ const handler = async (m, { conn }) => {
     }
 
     let gruposBotAdmin = [];
+    // Recorrer todos los grupos y ver si el bot es admin usando la lista oficial de administradores
     for (const group of gruposData) {
       let groupId = group.id || group.jid || group;
       try {
         const metadata = await conn.groupMetadata(groupId);
-        // Busca la lista de administradores (siempre existe)
-        let adminList = metadata.participants.filter(p => p.admin).map(p => (p.id || "").replace(/[^0-9]/g, ""));
-        if (adminList.includes(botNumber)) {
+        // Lista de IDs de administradores
+        let adminIDs = metadata.participants
+          .filter(p => p.admin)
+          .map(p => (p.id || "").replace(/[^0-9]/g, ""));
+        // Si el número del bot está en los administradores, lo agregamos
+        if (adminIDs.includes(botNumber)) {
           gruposBotAdmin.push({ id: groupId, subject: metadata.subject || "Sin Nombre" });
         }
-        await new Promise(res => setTimeout(res, 40)); // Pausa pequeña
+        await new Promise(res => setTimeout(res, 50)); // Pausa pequeña para evitar rate limit
       } catch (e) { continue; }
     }
 
@@ -41,13 +46,13 @@ const handler = async (m, { conn }) => {
       return conn.sendMessage(chatId, { text: "🚫 El bot NO es admin en ningún grupo." }, { quoted: m });
     }
 
-    // Guarda la lista para otros comandos
+    // Guarda la lista para otros comandos tipo .avisoN
     global.gruposAvisosCache = gruposBotAdmin;
 
-    // Mensaje personalizado y atractivo
+    // Mensaje personalizado y claro
     let mensaje = [
       "╔═══════════════════════════╗",
-      "    🤖 *GRUPOS DONDE EL BOT ES ADMIN* 🤖",
+      "🤖 *GRUPOS DONDE EL BOT ES ADMIN* 🤖",
       "╚═══════════════════════════╝",
       "",
       gruposBotAdmin.map((g, i) => `*${i + 1}.* ${g.subject}`).join('\n'),
@@ -56,13 +61,12 @@ const handler = async (m, { conn }) => {
       `🔢 *Cantidad total:* ${gruposBotAdmin.length}`,
       "━━━━━━━━━━━━━━━━━━━━━━━",
       "",
-      "💡 *¿Deseas enviar un aviso a un grupo específico?*",
+      "💡 *¿Quieres enviar un aviso a un grupo específico?*",
       "Usa el comando:",
       "   *.aviso1 <mensaje>* para el primer grupo,",
-      "   *.aviso2 <mensaje>* para el segundo,",
-      "   y así sucesivamente.",
+      "   *.aviso2 <mensaje>* para el segundo, etc.",
       "",
-      "📝 *Consejo:* Si cambiaste de grupo o de admin, ejecuta este comando otra vez."
+      "📝 *Si cambiaste de grupo o de admin, ejecuta este comando otra vez.*"
     ].join('\n');
 
     return conn.sendMessage(chatId, { text: mensaje.trim(), quoted: m });
