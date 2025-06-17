@@ -1,22 +1,17 @@
 const handler = async (msg, { conn }) => {
-  const chats = Object.values(await conn.chats.all());
-  let groupIds = chats.filter(c => c.id.endsWith("@g.us")).map(c => c.id);
+  // Obtener todos los chats tipo grupo
+  let allChats = await conn.groupFetchAllParticipating?.() || {};
+  let grupos = Object.values(allChats);
 
   let adminGroups = [];
-  for (let id of groupIds) {
-    let metadata;
+  for (let g of grupos) {
     try {
-      metadata = await conn.groupMetadata(id);
-    } catch (e) {
-      continue; // por si el bot ya no está en el grupo
-    }
-    let isBotAdmin = metadata.participants.find(p => p.id === conn.user.jid)?.admin;
-    if (isBotAdmin) {
-      adminGroups.push({
-        name: metadata.subject,
-        id: id
-      });
-    }
+      let meta = await conn.groupMetadata(g.id);
+      let bot = meta.participants.find(u => u.id === conn.user.jid);
+      if (bot && bot.admin) {
+        adminGroups.push({ name: meta.subject, id: meta.id });
+      }
+    } catch {}
   }
 
   if (!adminGroups.length) {
@@ -25,10 +20,11 @@ const handler = async (msg, { conn }) => {
     }, { quoted: msg });
   }
 
-  let lista = adminGroups.map((g, i) => `*${i+1}.* ${g.name}\nID: ${g.id}`).join('\n\n');
+  let texto = adminGroups.map((g, i) => `*${i + 1}.* ${g.name}\nID: ${g.id}`).join('\n\n');
   conn.sendMessage(msg.key.remoteJid, {
-    text: `👑 *Grupos donde soy admin:*\n\n${lista}`
+    text: `👑 *Grupos donde soy admin:*\n\n${texto}`
   }, { quoted: msg });
 };
+
 handler.command = ["misgruposadmin"];
 module.exports = handler;
