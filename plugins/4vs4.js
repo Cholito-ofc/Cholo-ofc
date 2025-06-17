@@ -2,7 +2,7 @@ const handler = async (msg, { conn, args }) => {
   const chatId = msg.key.remoteJid;
   const sender = msg.key.participant || msg.key.remoteJid;
   const senderNum = sender.replace(/[^0-9]/g, "");
-  const isOwner = global.owner.some(([id]) => id === senderNum);
+  const isOwner = (global.owner || []).some(([id]) => id === senderNum);
   const isFromMe = msg.key.fromMe;
 
   if (!chatId.endsWith("@g.us")) {
@@ -25,7 +25,7 @@ const handler = async (msg, { conn, args }) => {
     }, { quoted: msg });
   }
 
-  // Convertir la hora ingresada a formato 24h base México
+  // Conversión de horario
   const to24Hour = (str) => {
     let [time, modifier] = str.toLowerCase().split(/(am|pm)/);
     let [h, m] = time.split(":").map(n => parseInt(n));
@@ -33,13 +33,11 @@ const handler = async (msg, { conn, args }) => {
     if (modifier === 'am' && h === 12) h = 0;
     return { h, m: m || 0 };
   };
-
   const to12Hour = (h, m) => {
     const suffix = h >= 12 ? 'pm' : 'am';
     h = h % 12 || 12;
     return `${h}:${m.toString().padStart(2, '0')}${suffix}`;
   };
-
   const base = to24Hour(horaTexto);
 
   const zonas = [
@@ -95,16 +93,41 @@ const handler = async (msg, { conn, args }) => {
 
   const renderJugadores = (arr) => arr.map((u, i) => `${i === 0 ? "👑" : "🥷🏻"} ┇ @${u.id.split("@")[0]}`).join("\n");
 
-  const textoFinal = `*4 𝐕𝐄𝐑𝐒𝐔𝐒 4*\n\n⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎\n${horaMsg}\n\n➥ 𝐌𝐎𝐃𝐀𝐋𝐈𝐃𝐀𝐃: 🔫 Clásico\n➥ 𝐉𝐔𝐆𝐀𝐃𝐎𝐑𝐄𝐒:\n\n      𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 1\n\n${renderJugadores(escuadra1)}\n\n    ㅤʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:\n${renderJugadores(suplentes.slice(0, 2))}\n\n     𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 2\n\n${renderJugadores(escuadra2)}\n\n    ㅤʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:\n${renderJugadores(suplentes.slice(2))}`;
+  const textoFinal = `*4 𝐕𝐄𝐑𝐒𝐔𝐒 4*\n\n⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎\n${horaMsg}\n\n➥ 𝐌𝐎𝐃𝐀𝐋𝐈𝐃𝐀𝐃: 🔫 Clásico\n➥ 𝐉𝐔𝐆𝐀𝐃𝐎𝐑𝐄𝐒:\n\n      𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 1\n\n${renderJugadores(escuadra1)}\n\n    ㅤʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:\n${renderJugadores(suplentes.slice(0, 2))}\n\n     𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝐀 2\n\n${renderJugadores(escuadra2)}\n\n    ㅤʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:\n${renderJugadores(suplentes.slice(2))}`;
 
   const mentions = [...escuadra1, ...escuadra2, ...suplentes].map(p => p.id);
 
+  // --- Botones para que cada usuario elija Titular o Suplente ---
+  const botones = [
+    { buttonId: `.eligetitular ${chatId}`, buttonText: { displayText: '🥇 Titular' }, type: 1 },
+    { buttonId: `.eligesuplente ${chatId}`, buttonText: { displayText: '🧤 Suplente' }, type: 1 }
+  ];
+
   await conn.sendMessage(chatId, {
     edit: tempMsg.key,
-    text: textoFinal,
-    mentions
+    text: textoFinal + "\n\n⬇️ Elige tu puesto tocando un botón ⬇️",
+    mentions,
+    buttons: botones,
+    headerType: 1
   });
 };
 
+// El handler original
 handler.command = ['4vs4'];
 module.exports = handler;
+
+// Handlers para los botones (agrega esto en tu plugins o en el mismo archivo)
+const elegirHandler = async (msg, { conn, args, command }) => {
+  const chatId = args[0] || msg.key.remoteJid;
+  const participante = msg.key.participant || msg.key.remoteJid;
+  const nombre = (msg.pushName || "Usuario");
+
+  if (command === "eligetitular") {
+    await conn.sendMessage(chatId, { text: `✅ @${participante.split("@")[0]} ahora es *Titular*`, mentions: [participante] });
+  }
+  if (command === "eligesuplente") {
+    await conn.sendMessage(chatId, { text: `🧤 @${participante.split("@")[0]} ahora es *Suplente*`, mentions: [participante] });
+  }
+};
+elegirHandler.command = ['eligetitular', 'eligesuplente'];
+module.exports.elegirHandler = elegirHandler;
