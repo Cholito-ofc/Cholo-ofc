@@ -3832,9 +3832,12 @@ case 'menu': {
 
     const chatId = msg.key.remoteJid;
     const captionText = `*╭━━━━━━⋆★⋆━━━━━━⬣*
-*┃* *𝙺𝙸𝙻𝙻𝚄𝙰-𝙱𝙾𝚃* 👑🥷🏻
-*┃* 𝘈𝘴𝘪𝘴𝘵𝘦𝘯𝘵𝘦 𝘝𝘪𝘳𝘵𝘶𝘢𝘭
+*┃* *🍃𝙺𝙸𝙻𝙻𝚄𝙰-𝙱𝙾𝚃 𝙿𝚁𝙾* 
+*┃* *🧑🏻‍💻𝙲𝚁𝙴𝙰𝙳𝙾𝚁 ⬇️* 
+*┃* *🗣https://wa.link/mhya0o*
 *╰━━━━━━⋆★⋆━━━━━━⬣*
+
+𝖡𝗂𝖾𝗇𝗏𝖾𝗇𝗂𝖽𝗈 𝖾𝗌𝗍𝖾 𝖾𝗌 𝗎𝗇 𝗆𝖾𝗇𝗎́ 𝗋𝖾𝗌𝗎𝗆𝗂𝖽𝗈 𝖽𝖾 𝗅𝗈 𝗊𝗎𝖾́ 𝖼𝗈𝗇𝗍𝗂𝖾𝗇𝖾 𝖪𝗂𝗅𝗅𝗎𝖺𝖡𝗈𝗍.
 
 ╭━━[ 𝗠𝗘𝗡𝗨́ 𝗣𝗥𝗜𝗡𝗖𝗜𝗣𝗔𝗟 📋]━⬣
 
@@ -3856,13 +3859,18 @@ case 'menu': {
 ┃➜ ${global.prefix}𝗆𝖾𝗇𝗎𝖿𝗋𝖾𝖾
 
 ╭━━[ 𝗦𝗜𝗦𝗧𝗘𝗠𝗔 𝗗𝗘 𝗩𝗘𝗡𝗧𝗔𝗦🛍️ ]━⬣
-┃➜ ${global.prefix}𝗌𝖾𝗍𝗌𝗍𝗈𝗄 / 𝗌𝗍𝗈𝖼𝗄
-┃➜ ${global.prefix}𝗌𝖾𝗍𝗇𝖾𝗍𝖿𝗅𝗂𝗑 / 𝗇𝖾𝗍𝖿𝗅𝗂𝗑
-┃➜ ${global.prefix}𝗌𝖾𝗍𝗉𝖺𝗀𝗈 / 𝗉𝖺𝗀𝗈
-┃➜ ${global.prefix}𝗌𝖾𝗍𝖼𝗈𝗆𝖻𝗈𝗌 / 𝖼𝗈𝗆𝖻𝗈𝗌
-┃➜ ${global.prefix}𝗌𝖾𝗍𝗋𝖾𝗀𝗅𝖺𝗌 / 𝗋𝖾𝗀𝗅𝖺𝗌
+┃➜ ${global.prefix}𝗌𝖾𝗍𝗌𝗍𝗈𝖼𝗄
+┃➜ ${global.prefix}𝗌𝗍𝗈𝖼𝗄
+┃➜ ${global.prefix}𝗌𝖾𝗍𝗇𝖾𝗍𝖿𝗅𝗂𝗑
+┃➜ ${global.prefix}𝗇𝖾𝗍𝖿𝗅𝗂𝗑
+┃➜ ${global.prefix}𝗌𝖾𝖽𝗉𝖺𝗀𝗈
+┃➜ ${global.prefix}𝗉𝖺𝗀𝗈
+┃➜ ${global.prefix}𝗌𝖾𝗍𝖼𝗈𝗆𝖻𝗈𝗌
+┃➜ ${global.prefix}𝖼𝗈𝗆𝖻𝗈𝗌
+┃➜ ${global.prefix}𝗌𝖾𝗍𝗋𝖾𝗀𝗅𝖺𝗌
+┃➜ ${global.prefix}𝗋𝖾𝗀𝗅𝖺𝗌
 ┃➜ ${global.prefix}𝗌𝗈𝗋𝗍𝖾𝗈
-
+*╰━━━━━━⋆★⋆━━━━━━⬣*
 ╭━━[ 𝗜𝗔 & 𝗖𝗛𝗔𝗧𝗕𝗢𝗧𝗦 👨‍💻 ]━⬣
 ┃➜ ${global.prefix}𝗀𝖾𝗆𝗂𝗇𝗂 / 𝖼𝗁𝖺𝗍𝗀𝗉𝗍 / 𝖽𝖺𝗅𝗅𝖾
 ┃➜ ${global.prefix}𝗏𝗂𝗌𝗂𝗈𝗇 / 𝗏𝗂𝗌𝗂𝗈́𝗇𝟤 / 𝗌𝗂𝗆𝗂
