@@ -12,32 +12,31 @@ const handler = async (msg, { conn }) => {
     return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
   }
 
-  const botId = (conn.user?.id || conn.user?.jid || "").split(":")[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+  // --- NUEVO MÉTODO PARA LEER TODOS LOS GRUPOS ---
+  let chats = Object.values(conn.chats || {});
+  let grupos = chats.filter(c => c.id && c.id.endsWith("@g.us"));
 
-  let gruposMeta = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
+  // Si quieres solo los grupos donde el bot es admin, debes verificar con groupMetadata
   let gruposBotAdmin = [];
-
-  for (const group of gruposMeta) {
+  for (const group of grupos) {
     try {
       const metadata = await conn.groupMetadata(group.id);
-      const isAdmin = metadata.participants.some(p => 
-        p.id.replace(/[^0-9]/g, "") === botId.replace(/[^0-9]/g, "") && (p.admin === "admin" || p.admin === "superadmin")
-      );
-      if (isAdmin) {
-        gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
-      }
+      // Si quieres mostrar todos, comenta la siguiente línea:
+      // const isAdmin = metadata.participants.some(p => p.id === (conn.user?.id || conn.user?.jid) && (p.admin === "admin" || p.admin === "superadmin"));
+      // if (!isAdmin) continue;
+      gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
     } catch (e) { continue; }
   }
 
   if (gruposBotAdmin.length === 0) {
-    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info correctamente.*" }, { quoted: msg });
+    return conn.sendMessage(chatId, { text: "❌ *No estoy en ningún grupo o no puedo obtener la info correctamente.*" }, { quoted: msg });
   }
 
   global.gruposAvisosCache = gruposBotAdmin;
 
   let listado = gruposBotAdmin.map((g, i) => `*${i + 1}.* ${g.subject}`).join('\n');
   conn.sendMessage(chatId, {
-    text: `*Grupos donde soy admin:*\n\n${listado}\n\nUsa *.aviso1 <mensaje o multimedia>* para avisar al grupo 1, *.aviso2* al 2, etc.\nPuedes responder a una imagen, sticker, audio, documento, etc.`,
+    text: `*Grupos donde estoy:*\n\n${listado}\n\nUsa *.aviso1 <mensaje o multimedia>* para avisar al grupo 1, *.aviso2* al 2, etc.\nPuedes responder a una imagen, sticker, audio, documento, etc.`,
     quoted: msg
   });
 };
