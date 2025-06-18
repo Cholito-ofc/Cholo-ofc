@@ -1,48 +1,39 @@
-// plugins/gruposavisos.js
 global.gruposAvisosCache = []
 
-const handler = async (msg, { conn }) => {
+const handler = async (msg, { conn, text}) => {
   const chatId = msg.key.remoteJid;
   const senderId = msg.key.participant || msg.key.remoteJid;
   const senderNum = senderId.replace(/[^0-9]/g, "");
   const isOwner = global.owner.some(([id]) => id === senderNum);
   const isFromMe = msg.key.fromMe;
 
-  if (!isOwner && !isFromMe) {
-    return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*" }, { quoted: msg });
-  }
+  if (!isOwner &&!isFromMe) {
+    return conn.sendMessage(chatId, { text: "🚫 *Solo el owner o el bot pueden usar este comando.*"}, { quoted: msg});
+}
 
-  const botId = (conn.user?.id || conn.user?.jid || "").split(":")[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+  if (!text) {
+    return conn.sendMessage(chatId, { text: "❗ *Debes escribir el mensaje a enviar.*"}, { quoted: msg});
+}
 
-  let gruposMeta = Object.values(await conn.groupFetchAllParticipating ? await conn.groupFetchAllParticipating() : {});
-  let gruposBotAdmin = [];
-
+  let gruposMeta = Object.values(await conn.groupFetchAllParticipating? await conn.groupFetchAllParticipating(): {});
   for (const group of gruposMeta) {
     try {
       const metadata = await conn.groupMetadata(group.id);
-      const isAdmin = metadata.participants.some(p => 
-        p.id.replace(/[^0-9]/g, "") === botId.replace(/[^0-9]/g, "") && (p.admin === "admin" || p.admin === "superadmin")
-      );
+      const isAdmin = metadata.participants.some(p =>
+        p.id.includes(conn.user.jid) && (p.admin === "admin" || p.admin === "superadmin")
+);
       if (isAdmin) {
-        gruposBotAdmin.push({ id: group.id, subject: metadata.subject });
-      }
-    } catch (e) { continue; }
-  }
+        await conn.sendMessage(group.id, { text}, { quoted: msg});
+}
+} catch (e) {
+      console.error(`Error enviando a ${group.id}`, e);
+}
+}
 
-  if (gruposBotAdmin.length === 0) {
-    return conn.sendMessage(chatId, { text: "❌ *No estoy como admin en ningún grupo, o no puedo obtener la info correctamente.*" }, { quoted: msg });
-  }
-
-  global.gruposAvisosCache = gruposBotAdmin; // Guarda la lista globalmente
-
-  let listado = gruposBotAdmin.map((g, i) => `*${i + 1}.* ${g.subject}`).join('\n');
-  conn.sendMessage(chatId, {
-    text: `*Grupos donde soy admin:*\n\n${listado}\n\nUsa *.aviso1 <mensaje>* para avisar al grupo 1, *.aviso2 <mensaje>* al 2, etc.`,
-    quoted: msg
-  });
+  conn.sendMessage(chatId, { text: "✅ *Mensaje enviado a todos los grupos donde soy admin.*"}, { quoted: msg});
 };
 
 handler.command = ["gruposavisos"];
 handler.tags = ["admin"];
-handler.help = ["gruposavisos"];
+handler.help = ["gruposavisos <mensaje>"];
 module.exports = handler;
