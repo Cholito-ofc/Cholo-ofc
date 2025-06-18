@@ -15,22 +15,32 @@ const handler = async (msg, { conn, text}) => {
     return conn.sendMessage(chatId, { text: "❗ *Debes escribir el mensaje a enviar.*"}, { quoted: msg});
 }
 
+  const botId = (conn.user?.id || conn.user?.jid || "").split(":")[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+  console.log(`Bot ID: ${botId}`);
+
   let gruposMeta = Object.values(await conn.groupFetchAllParticipating? await conn.groupFetchAllParticipating(): {});
+  let enviados = [];
+
   for (const group of gruposMeta) {
     try {
       const metadata = await conn.groupMetadata(group.id);
       const isAdmin = metadata.participants.some(p =>
-        p.id.includes(conn.user.jid) && (p.admin === "admin" || p.admin === "superadmin")
+        p.id === botId && (p.admin === "admin" || p.admin === "superadmin")
 );
       if (isAdmin) {
         await conn.sendMessage(group.id, { text}, { quoted: msg});
+        enviados.push(metadata.subject);
 }
 } catch (e) {
       console.error(`Error enviando a ${group.id}`, e);
 }
 }
 
-  conn.sendMessage(chatId, { text: "✅ *Mensaje enviado a todos los grupos donde soy admin.*"}, { quoted: msg});
+  let resumen = enviados.length
+? `✅ *Mensaje enviado a los siguientes grupos:*\n\n${enviados.map((name, i) => `*${i + 1}.* ${name}`).join("\n")}`
+: "⚠️ *No se pudo enviar el mensaje a ningún grupo.*";
+
+  return conn.sendMessage(chatId, { text: resumen}, { quoted: msg});
 };
 
 handler.command = ["gruposavisos"];
