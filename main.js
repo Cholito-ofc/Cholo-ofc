@@ -3638,7 +3638,7 @@ case 'allmenu': {
     let totalComandos = commands.length;
 
     // Menú visual estilizado
-    let commandList = `📚 𓆩 𝐌𝐄𝐍𝐔́ 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎 - 𝐊𝐈𝐋𝐋𝐔𝐀 𝟐.𝟎 𝐁𝐎𝐓 𓆪
+    let commandList = `📚 𓆩 𝐌𝐄𝐍𝐔́ 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎 -  𝐒𝐄𝐑𝐆𝐈𝐎 𝐁𝐎𝐓 𓆪
 
 ♣ *Total de comandos:* ${totalComandos}
 ♣ *Prefijo actual:* 『${global.prefix}』
