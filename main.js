@@ -3640,26 +3640,25 @@ case 'allmenu': {
     // Menú visual estilizado
     let commandList = `📚 𓆩 𝐌𝐄𝐍𝐔́ 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎 - 𝐊𝐈𝐋𝐋𝐔𝐀 𝟐.𝟎 𝐁𝐎𝐓 𓆪
 
-🔹 *Total de comandos:* ${totalComandos}
-🔹 *Prefijo actual:* 『${global.prefix}』
-🔹 Usa el prefijo antes de cada comando.
+♣ *Total de comandos:* ${totalComandos}
+♣ *Prefijo actual:* 『${global.prefix}』
+♣ Usa el prefijo antes de cada comando.
 
 ━━━━━━━━━━━━━━━━━━━`;
 
     commands.forEach(cmd => {
-      commandList += `\n➤ ${global.prefix}${cmd}`;
+      commandList += `\n║➣ ${global.prefix}${cmd}`;
     });
 
     commandList += `
 
 ━━━━━━━━━━━━━━━━━━━
-👨‍💻 *Desarrollado por:* Cholo XZ
-🤖 *Killua 2.0 — Asistente Avanzado*`;
+👨‍💻 *Desarrollado por:* 𝗦𝗲𝗿𝗴𝗶𝗼`;
 
     await sock.sendMessage2(
       chatId,
       {
-        image: { url: "https://cdn.russellxz.click/1e4c9ec7.jpeg" },
+        image: { url: "https://cdn.russellxz.click/879e1377.jpeg" },
         caption: commandList
       },
       msg
@@ -3682,56 +3681,49 @@ case 'menuowner': {
     });
 
     const chatId = msg.key.remoteJid;
-    const captionText = `👑 KILLUA 2.0 — PANEL DEL CREADOR
+    const captionText = `👑 𝗦𝗘𝗥𝗚𝗜𝗢-𝗕𝗢𝗧 
 
-🧠 𝗖𝗼𝗺𝗮𝗻𝗱𝗼𝘀 𝗲𝘅𝗰𝗹𝘂𝘀𝗶𝘃𝗼𝘀 𝗽𝗮𝗿𝗮 𝗲𝗹 𝗽𝗿𝗼𝗽𝗶𝗲𝘁𝗮𝗿𝗶𝗼:
+🧠 𝗘𝘅𝗰𝗹𝘂𝘀𝗶𝘃𝗼𝘀 𝗽𝗮𝗿𝗮 𝗲𝗹 𝗽𝗿𝗼𝗽𝗶𝗲𝘁𝗮𝗿𝗶𝗼:
 
-┃➜ ${global.prefix}bc
-┃➜ ${global.prefix}rest
-┃➜ ${global.prefix}carga
-┃➜ ${global.prefix}cargabots
-┃➜ ${global.prefix}delsesion
-┃➜ ${global.prefix}delsubbots
-┃➜ ${global.prefix}deltmp
-┃➜ ${global.prefix}modoprivado on/off
+║➣ ${global.prefix}bc
+║➣ ${global.prefix}rest
+║➣ ${global.prefix}carga
+║➣ ${global.prefix}cargabots
+║➣ ${global.prefix}delsesion
+║➣ ${global.prefix}delsubbots
+║➣ ${global.prefix}deltmp
+║➣ ${global.prefix}modoprivado on/off
 
-╭───────•◈•───────╮
  𝗣𝗘𝗥𝗦𝗢𝗡𝗔𝗟𝗜𝗭𝗔 𝗧𝗨́ 𝗕𝗢𝗧 🤝
-╰───────•◈•───────╯
 
-┃➜ ${global.prefix}botname
-┃➜ ${global.prefix}botfoto
-┃➜ ${global.prefix}setprefix
-┃➜ ${global.prefix}git
+║➣ ${global.prefix}botname
+║➣ ${global.prefix}botfoto
+║➣ ${global.prefix}setprefix
+║➣ ${global.prefix}git
 
-╭───────•◈•───────╮
-   𝗖𝗢𝗡𝗦𝗢𝗟𝗔 𝗧𝗘́𝗖𝗡𝗜𝗖𝗔 👨🏻‍💻
-╰───────•◈•───────╯
+   𝗧𝗘́𝗖𝗡𝗜𝗖𝗢 👨🏻‍💻
 
-┃➜ ${global.prefix}re
-┃➜ ${global.prefix}unre
-┃➜ ${global.prefix}antideletepri on/off
-┃➜ ${global.prefix}apagar
-┃➜ ${global.prefix}prender
+║➣ ${global.prefix}re
+║➣ ${global.prefix}unre
+║➣ ${global.prefix}antideletepri on/off
+║➣ ${global.prefix}apagar
+║➣ ${global.prefix}prender
 
-╭───────•◈•───────╮
  𝗖𝗢𝗡𝗧𝗘𝗡𝗜𝗗𝗢 𝗘𝗗𝗜𝗧𝗔𝗕𝗟𝗘 ✍🏼
-╰───────•◈•───────╯
 
-┃➜ ${global.prefix}addper
-┃➜ ${global.prefix}addmascota
-┃➜ ${global.prefix}dar
-┃➜ ${global.prefix}dame
-┃➜ ${global.prefix}addlista
-┃➜ ${global.prefix}deletelista
+║➣ ${global.prefix}addper
+║➣ ${global.prefix}addmascota
+║➣ ${global.prefix}dar
+║➣ ${global.prefix}dame
+║➣ ${global.prefix}addlista
+║➣ ${global.prefix}deletelista
 
-🔐 Solo para administradores autorizados.
-👨‍💻 Dueño: 𝐂𝐡𝐨𝐥𝐨 𝐡𝐧`;
+🔐 Solo el dueño puede usarlos`;
 
     await sock.sendMessage2(
       chatId,
       {
-        image: { url: "https://cdn.russellxz.click/917341ff.jpeg" },
+        image: { url: "https://cdn.russellxz.click/879e1377.jpeg" },
         caption: captionText
       },
       msg
@@ -14191,9 +14183,9 @@ case "perfil": {
 }
 
 case 'creador': {
-    const ownerNumber = "50489513153@s.whatsapp.net"; // Número del dueño en formato WhatsApp
+    const ownerNumber = "573147437542@s.whatsapp.net"; // Número del dueño en formato WhatsApp
     const ownerName = "𝘾𝙝𝙤𝙡𝙞𝙩𝙤 𝙭𝙮𝙯🤖"; // Nombre del dueño
-    const messageText = "📞  *Contacto del Creador:*\n\nSi tienes dudas, preguntas o sugerencias sobre el bot, puedes contactar a mi creador.\n\n📌 *Nombre:* 𝗖𝗵𝗼𝗹𝗼\n📌 *Número:* +504 8951-3153\n💬 *Mensaje directo:* Pulsa sobre el contacto y chatea con él.";
+    const messageText = "📞  *Contacto del Creador:*\n\nSi tienes dudas, preguntas o sugerencias sobre el bot, puedes contactar a mi creador.\n\n📌 *Nombre:* Sergio\n📌 *Número:* +57 314 7437542\n💬 *Mensaje directo:* Pulsa sobre el contacto y chatea con él.";
 
     // Enviar mensaje con el contacto del dueño
     await sock.sendMessage(msg.key.remoteJid, {
