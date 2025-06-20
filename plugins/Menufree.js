@@ -7,10 +7,10 @@ const handler = async (msg, { conn }) => {
     await conn.sendMessage(chatId, { react: { text: "🎮", key: msg.key } });
 
     // Imagen del menú
-    const imgUrl = 'https://cdn.russellxz.click/964add8b.jpeg';
+    const imgUrl = 'https://cdn.russellxz.click/ce4c2bcf.jpeg';
 
     // Texto del menú rediseñado
-    const texto = `🎮 𓆩 𝐊𝐈𝐋𝐋𝐔𝐀 𝟐.𝟎 — 𝐌𝐄𝐍𝐔́ 𝐅𝐑𝐄𝐄 𝐅𝐈𝐑𝐄 𓆪
+    const texto = `🎮 𓆩 𝐌𝐄𝐍𝐔́ 𝐅𝐑𝐄𝐄 𝐅𝐈𝐑𝐄 𓆪
 
 🍉 𝐌𝐀𝐏𝐀𝐒 𝐃𝐄 𝐉𝐔𝐄𝐆𝐎  
 📍 ➤ ${prefix}mapas
@@ -29,8 +29,8 @@ const handler = async (msg, { conn }) => {
 🏹 ➤ ${prefix}guerr
 
 ───────────────────
-👨‍💻 *Desarrollado por:* 𝐂𝐡𝐨𝐥𝐨 𝐱𝐳 
-🤖 *Killua 2.0 Bot — Sección Free Fire*`;
+👨‍💻 *Creador:* Sergio
+🤖 *Sergio-bot— Sección Free Fire*`;
 
     await conn.sendMessage(chatId, {
       image: { url: imgUrl },
