@@ -401,23 +401,29 @@ const farewellTexts = [
 
 // BIENVENIDA: solo cuando alguien entra
 if (update.action === "add" && welcomeActivo) {
-  let groupDesc = "";
-  try {
-    const metadata = await sock.groupMetadata(update.id);
-    groupDesc = metadata.desc ? `\n\n📜 *Descripción del grupo:*\n${metadata.desc}` : "\n\n📜 *Este grupo no tiene descripción.*";
-  } catch (err) {
-    groupDesc = "\n\n📜 *No se pudo obtener la descripción del grupo.*";
-  }
-
   for (const participant of update.participants) {
     const mention = `@${participant.split("@")[0]}`;
+    const customMessage = customWelcomes[update.id];
     let profilePicUrl = "https://cdn.russellxz.click/d9d547b6.jpeg";
     try {
       profilePicUrl = await sock.profilePictureUrl(participant, "image");
     } catch (err) {}
 
-    // Solo manda la descripción del grupo
-    const textoFinal = `👋🏻 Bienvenido/a ${mention}${groupDesc}`;
+    let textoFinal = "";
+    if (customMessage) {
+      // Si hay mensaje personalizado, reemplaza @user por la mención real
+      textoFinal = customMessage.replace(/@user/gi, mention);
+    } else {
+      // Si no hay mensaje personalizado, solo manda la descripción del grupo
+      let groupDesc = "";
+      try {
+        const metadata = await sock.groupMetadata(update.id);
+        groupDesc = metadata.desc ? `\n\n📜 *Descripción del grupo:*\n${metadata.desc}` : "\n\n📜 *Este grupo no tiene descripción.*";
+      } catch (err) {
+        groupDesc = "\n\n📜 *No se pudo obtener la descripción del grupo.*";
+      }
+      textoFinal = `👋🏻 ${mention}${groupDesc}`;
+    }
 
     await sock.sendMessage(update.id, {
       image: { url: profilePicUrl },
