@@ -348,7 +348,7 @@ case 'play2': {
     const thumbnail = video.thumbnail;
 
     const info = `
-╭─╼⃝🌟 𝖪𝗂𝗅𝗅𝗎𝖺𝖡𝗈𝗍 𝟤.𝟢 🌟╾⃝─╮
+ SERGIO 𝖡𝗈𝗍 𝟤.𝟢 
 
 🎼 𝐷𝑒𝑡𝑎𝑙𝑙𝑒𝑠 𝑑𝑒 𝑡𝑢 𝑏𝑢́𝑠𝑞𝑢𝑒𝑑𝑎:
 ╭───────────────╮
@@ -363,7 +363,7 @@ case 'play2': {
 ➤ 𝟐 𝗈 *𝗏𝗂𝖽𝖾𝗈* – 𝖵𝗂́𝖽𝖾𝗈    
 ╰───────────✦
 
-🤖 𝓴𝓲𝓵𝓵𝓾𝓪𝓑𝓸𝓽 𝟤.𝟢 – 𝓣𝓾 𝓑𝓸𝓽 𝓘𝓷𝓽𝓮𝓵𝓲𝓰𝓮𝓷𝓽𝓮 🎧
+🤖 𝓢𝓮𝓻𝓰𝓲𝓸 𝟤.𝟢 – 𝓣𝓾 𝓑𝓸𝓽 𝓘𝓷𝓽𝓮𝓵𝓲𝓰𝓮𝓷𝓽𝓮 🎧
 `;
 
     const sent = await sock.sendMessage(chatId, {
@@ -406,7 +406,7 @@ case "menuaudio": {
     const guarData = JSON.parse(fs.readFileSync("./guar.json", "utf-8"));
     let claves = Object.keys(guarData);
 
-    let listaMensaje = `🎧 𓆩 𝐌𝐄𝐍𝐔́ 𝐌𝐔𝐋𝐓𝐈𝐌𝐄𝐃𝐈𝐀 — 𝐊𝐈𝐋𝐋𝐔𝐀 𝟐.𝟎 𓆪
+    let listaMensaje = `🎧 𓆩 𝐌𝐄𝐍𝐔́ 𝐌𝐔𝐋𝐓𝐈𝐌𝐄𝐃𝐈𝐀 — 𝐒𝐄𝐑𝐆𝐈𝐎 𓆪
 
 🔑 *Palabras clave almacenadas:*  
 ✦ Usa el comando: *${global.prefix}g palabra_clave*  
@@ -436,7 +436,7 @@ case "menuaudio": {
     await sock.sendMessage2(
       msg.key.remoteJid,
       {
-        image: { url: "https://cdn.russellxz.click/eec4cf99.jpeg" },
+        image: { url: "https://cdn.russellxz.click/ce4c2bcf.jpeg" },
         caption: listaMensaje
       },
       msg
@@ -839,7 +839,7 @@ case 'tovideo': {
     await sock.sendMessage(msg.key.remoteJid, {
       video: fs.readFileSync(outputPath),
       mimetype: 'video/mp4',
-      caption: '✅ Sticker convertido a video.\n\n© cortana 2.0 bot'
+      caption: '✅ Sticker convertido a video.\n\n© Sergio 2.0 bot'
     }, { quoted: msg });
 
     fs.unlinkSync(inputPath);
@@ -1083,7 +1083,7 @@ case 'whatmusic': {
         const channel = video.author.name || 'Desconocido';
 
         const banner = `
-╭〔 💿 𝗖𝗢𝗥𝗧𝗔𝗡𝗔 2.0 𝗕𝗢𝗧 〕╮
+╭  𝗦𝗘𝗥𝗚𝗜𝗢-𝗕𝗢𝗧 ╮
 
 🎧 𝙈𝙪𝙨𝙞𝙘 𝘿𝙚𝙩𝙚𝙘𝙩𝙚𝙙 🎶
 
@@ -1226,7 +1226,7 @@ case 'whatmusic6': {
         if (!video) throw new Error("No se encontró la canción en YouTube");
 
         const banner = `
-╭〔 💿 𝗖𝗢𝗥𝗧𝗔𝗡𝗔 2.0 𝗕𝗢𝗧 〕╮
+╭ 𝗦𝗘𝗥𝗚𝗜𝗢 𝗕𝗢𝗧 ╮
 
 🎧 𝙈𝙪𝙨𝙞𝙘 𝘿𝙚𝙩𝙚𝙘𝙩𝙚𝙙 🎶
 
@@ -1745,7 +1745,7 @@ case 'ytmp4': {
         }
 
         const caption = `
-╔✪〘 𝗞𝗜𝗟𝗟𝗨𝗔 2.0 𝗕𝗢𝗧 〙✪╗
+≪ SERGIO BOT ≫
 
 🎶 𝑰𝒏𝒇𝒐 𝒅𝒆𝒍 𝑽𝒊́𝒅𝒆𝒐:
 
@@ -1762,7 +1762,7 @@ case 'ytmp4': {
 
 ⚠️ 𝙎𝙞 𝙣𝙤 𝙨𝙚 𝙧𝙚𝙥𝙧𝙤𝙙𝙪𝙘𝙚, 𝙪𝙨𝙖 _${global.prefix}ff_
 
-🔧 𝑷𝒓𝒐𝒄𝒆𝒔𝒂𝒅𝒐 𝒑𝒐𝒓 𝐊𝐈𝐋𝐋𝐔𝐀 𝟐.𝟎 𝑩𝑶𝑻
+🔧 𝑷𝒓𝒐𝒄𝒆𝒔𝒂𝒅𝒐 𝒑𝒐𝒓 Sergio bot 
 `;
 
         await sock.sendMessage(msg.key.remoteJid, {
@@ -1951,7 +1951,7 @@ case 'ytmp3': {
 ⚙️ *Aguarda un momento mientras finalizamos la descarga.*
 
 ╭─────⟡
-│ 🤖 𝐊𝐈𝐋𝐋𝐔𝐀 𝟐.𝟎 𝐁𝐎𝐓
+│ 🤖 SERGIO BOT 
 ╰─────⟡`
     }, { quoted: msg });
 
@@ -2036,7 +2036,7 @@ case 'play3': {
 ⧁ 𝙋𝙊𝙋𝙐𝙇𝘼𝙍𝙄𝘿𝘼𝘿: ${result.popularity}
 ⧁ 𝙀𝙉𝙇𝘼𝘾𝙀: ${url}
 
-🎶 *Killua Ultra  esta enviando tu música...*`.trim();
+🎶 *Sergio Ultra  esta enviando tu música...*`.trim();
 
         await sock.sendMessage(msg.key.remoteJid, {
             image: { url: img },
@@ -2182,7 +2182,7 @@ case 'play5': {
 ⚙️ *Killua Ultra 2.0 está procesando tu música...*
 
 ═════════════════════  
-  𖥔 𝗞𝗶𝗹𝗹𝘂𝗮 𝗨𝗹𝘁𝗋𝗮 2.0 BOT 𖥔
+  𖥔 𝗦𝗲𝗿𝗴𝗶𝗼 𝗕𝗼𝘁 𖥔
 ═════════════════════`;
 
         await sock.sendMessage(msg.key.remoteJid, {
@@ -2339,7 +2339,7 @@ case 'play6': {
 
         const infoMessage = `
 ╔══════════════════╗
-║✦ 𝗞𝗜𝗟𝗟𝗨𝗔 𝙐𝙇𝙏𝙍𝘼 2.0 BOT  ✦   
+║   ✦ 𝗦𝗘𝗥𝗚𝗜𝗢 𝗕𝗢𝗧 ✦   
 ╚══════════════════╝
 
 📀 *𝙄𝙣𝙛𝙤 𝙙𝙚𝙡 𝙫𝙞𝙙𝙚𝙤:*  
@@ -2353,7 +2353,7 @@ case 'play6': {
 ⚙️ *Killua Ultra 2.0 está procesando tu video...*
 
 ═════════════════════  
-     𖥔 𝗞𝗶𝗹𝗹𝘂𝗮 𝗨𝗹𝘁𝗋𝗮 2.0 BOT𖥔
+     𝗦𝗲𝗿𝗴𝗶𝗼 𝗕𝗼𝘁
 ═════════════════════`;
 
         await sock.sendMessage(msg.key.remoteJid, {
@@ -2953,7 +2953,7 @@ case 'gremio': {
         // Encabezado del mensaje con el total al principio
         let listaMiembros = 
 `╔══════════════════╗  
-║ 🏰 *Gremio Killua 2.0* 🏰 ║  
+║ 🏰 *Gremio Sergio 2.0* 🏰 ║  
 ╚══════════════════╝  
 
 📋 *Total de miembros registrados:* ${miembros.length}\n`;
@@ -3747,7 +3747,7 @@ case 'menurpg': {
     });
 
     const chatId = msg.key.remoteJid;
-    const menuText = `🎮 𓆩 𝐊𝐈𝐋𝐋𝐔𝐀 𝟐.𝟎 𝐁𝐎𝐓 — 𝐌𝐄𝐍𝐔́ 𝐑𝐏𝐆 𓆪
+    const menuText = `🎮 𓆩 𝐒𝐄𝐑𝐆𝐈𝐎 𝐁𝐎𝐓 — 𝐌𝐄𝐍𝐔́ 𝐑𝐏𝐆 𓆪
 
 🌟 *Explora un mundo de aventuras*  
 📍 *Regístrate:* ${global.prefix}rpg <nombre> <edad>  
@@ -3793,8 +3793,8 @@ case 'menurpg': {
 🐶 ${global.prefix}topmascotas  
 🏅 ${global.prefix}topper
 
-🧙 *Desarrollado por:* 𝒉𝒏 𝑪𝒉𝒐𝒍𝒐
-🧭 *Sistema de aventura activo en Killua 2.0 Bot*`;
+🧙 *Desarrollado por:* 𝓢𝓮𝓻𝓰𝓲𝓸
+🧭 *Sistema de aventura activo en SegioBot*`;
 
     await sock.sendMessage2(
       chatId,
@@ -3941,7 +3941,6 @@ case 'menu': {
 
 ╔═≪ 𝗖𝗢𝗡𝗧𝗘𝗡𝗜𝗗𝗢 🔞 ≫
 ║➣ ${global.prefix}𝗏𝗂𝖽𝖾𝗈𝗑𝗑𝗑
-║➣ ${global.prefix}𝗑𝗑𝗑
 ║➣ ${global.prefix}𝗉𝗈𝗋𝗇𝗈𝗅𝗈𝗅𝗂
 ║➣ ${global.prefix}𝗇𝗌𝖿𝗐𝗇𝖾𝗄𝗈
 ║➣ ${global.prefix}𝗐𝖺𝗂𝖿𝗎
@@ -13491,7 +13490,7 @@ case "s":
         // 🌟 Formato llamativo para la metadata del sticker 🌟
         let metadata = {
             packname: `✨ Lo Mandó Hacer: ${senderName} ✨`,
-            author: `🤖 Bot Creador: KilluaBot 2.0\n🛠️ Desarrollado por: 𝘾𝙝𝙤𝙡𝙞𝙩𝙤 𝙭𝙯💻\n${fechaCreacion}`
+            author: `🤖 Bot Creador: SergioBot 2.0\n🛠️ Desarrollado por: Sergio💻\n${fechaCreacion}`
         };
 
         let stickerBuffer;
@@ -13793,7 +13792,7 @@ case 'info':
 
     const infoMessage = `╭─ *🤖 𝗞𝗜𝗟𝗟𝗨𝗔 𝗕𝗢𝗧 𝟮.𝟬* ─╮
 │ 🔹 *Prefijo actual:* ${global.prefix}
-│ 👑 *Dueño:* 𝗖𝗵𝗼𝗹𝗶𝘁𝗼 𝘅𝘆𝘇
+│ 👑 *Dueño:* Cholo
 │ 🛠️ *Bot desarrollado desde cero* con la ayuda de Chatgpt.
 │ 🚀 *Creado por:* 𝗖𝗵𝗼𝗹𝗶𝘁𝗼
 │  
@@ -13813,7 +13812,7 @@ case 'info':
 
     await sock.sendMessage2(msg.key.remoteJid,
   {
-    image: { url: "https://cdn.russellxz.click/fcf5ecd1.jpeg" }, 
+    image: { url: "https://cdn.russellxz.click/ce4c2bcf.jpeg" }, 
     caption: infoMessage 
   },
   msg 
@@ -14681,7 +14680,7 @@ case "ig":
 
 ━━━━━━━━━━━━━━  
 🚀 *API:* api.dorratz.com  
-🤖 *killua 2.0 Bot*`;
+🤖 *SergioBot*`;
 
         // Asegurar carpeta tmp
         const tmpDir = path.resolve('./tmp');
@@ -14807,7 +14806,7 @@ case "tt":
 
 📥 *Video descargado con éxito*
 🌐 *API:* https://api.dorratz.com
-🤖 *killua 2.0 Bot*`;
+🤖 *SergioBot*`;
 
         // 📩 Enviar video
         await sock.sendMessage(msg.key.remoteJid, {
@@ -14892,7 +14891,7 @@ case "fb":
         }
 
         // 📜 Mensaje final sin resoluciones ni 720
-        const message = `🎥 𝗩𝗶𝗱𝗲𝗼 𝗱𝗲 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 𝗹𝗶𝘀𝘁𝗼 🎯\n\n> ⚙️ DESCARGADO con api.dorratz.com\n───────\n🤖 *Cortana 2.0 Bot*`;
+        const message = `🎥 𝗩𝗶𝗱𝗲𝗼 𝗱𝗲 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 𝗹𝗶𝘀𝘁𝗼 🎯\n\n> ⚙️ DESCARGADO con api.dorratz.com\n───────\n🤖 *SergioBot*`;
 
         await sock.sendMessage(msg.key.remoteJid, {
             video: fs.readFileSync(filePath),
