@@ -4832,8 +4832,8 @@ case 'todos': {
     const args = messageText.trim().split(" ").slice(1);
     const extraMsg = args.join(" ");
 
-    let finalMsg = `╔『 🔊 INVOCACIÓN MASIVA 』╗\n`;
-    finalMsg += `╟🔹 *KILLUA 2.0 BOT PRESENTE*\n`;
+    let finalMsg = `╔『 🔊 MENCIÓN MASIVA 』╗\n`;
+    finalMsg += `╟🔹 *SERGIO BOT TE HABLA*\n`;
     finalMsg += `╟👤 *Invocado por:* @${sender}\n`;
     if (extraMsg.trim().length > 0) {
       finalMsg += `╟💬 *Mensaje:* ${extraMsg}\n`;
@@ -4845,7 +4845,7 @@ case 'todos': {
     const mentionIds = participants.map(p => p.id);
 
     await sock.sendMessage(chatId, {
-      image: { url: "https://cdn.russellxz.click/c207ff27.jpeg" },
+      image: { url: "https://cdn.russellxz.click/879e1377.jpeg" },
       caption: finalMsg,
       mentions: mentionIds
     }, { quoted: msg });
@@ -14184,7 +14184,7 @@ case "perfil": {
 
 case 'creador': {
     const ownerNumber = "573147437542@s.whatsapp.net"; // Número del dueño en formato WhatsApp
-    const ownerName = "𝘾𝙝𝙤𝙡𝙞𝙩𝙤 𝙭𝙮𝙯🤖"; // Nombre del dueño
+    const ownerName = "𝑺𝒆𝒓𝒈𝒊𝒐-𝑩𝒐𝒕"; // Nombre del dueño
     const messageText = "📞  *Contacto del Creador:*\n\nSi tienes dudas, preguntas o sugerencias sobre el bot, puedes contactar a mi creador.\n\n📌 *Nombre:* Sergio\n📌 *Número:* +57 314 7437542\n💬 *Mensaje directo:* Pulsa sobre el contacto y chatea con él.";
 
     // Enviar mensaje con el contacto del dueño
