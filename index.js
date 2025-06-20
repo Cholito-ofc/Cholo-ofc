@@ -411,21 +411,13 @@ if (update.action === "add" && welcomeActivo) {
 
   for (const participant of update.participants) {
     const mention = `@${participant.split("@")[0]}`;
-    const customMessage = customWelcomes[update.id];
     let profilePicUrl = "https://cdn.russellxz.click/d9d547b6.jpeg";
     try {
       profilePicUrl = await sock.profilePictureUrl(participant, "image");
     } catch (err) {}
 
-    let textoFinal;
-    if (customMessage) {
-      // Si hay mensaje personalizado, reemplaza @user por la mención real
-      textoFinal = customMessage.replace(/@user/gi, mention);
-    } else {
-      // Si no hay personalizado, mensaje aleatorio + descripción
-      const mensajeTexto = welcomeTexts[Math.floor(Math.random() * welcomeTexts.length)];
-      textoFinal = `👋🏻 𝑩𝒊𝒆𝒏𝒗𝒆𝒏𝒊𝒅𝒐/𝒂 ${mention}\n\n${mensajeTexto}${groupDesc}`;
-    }
+    // Solo manda la descripción del grupo
+    const textoFinal = `👋🏻 Bienvenido/a ${mention}${groupDesc}`;
 
     await sock.sendMessage(update.id, {
       image: { url: profilePicUrl },
