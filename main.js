@@ -430,8 +430,8 @@ case "menuaudio": {
 📤 ${global.prefix}g — Recuperar archivo  
 🗑️ ${global.prefix}kill — Eliminar archivo
 
-🚀 *killua 2.0 Bot está en constante expansión.*
-👨‍💻 *Desarrollado por Cholo XZ*`;
+🚀 *SergioBot está en constante expansión.*
+👨‍💻 *Creador: SergioBot*`;
 
     await sock.sendMessage2(
       msg.key.remoteJid,
@@ -2169,7 +2169,7 @@ case 'play5': {
         const { title, url, timestamp, views, author, thumbnail } = video;
 
         const infoMessage = `
-> 𝙺𝙸𝙻𝙻𝚄𝙰 𝙱𝙾𝚃 🎧
+> SERGIO BOT 🎧
 
 ╭───────────────╮
 ├ᴛɪᴛᴜʟᴏ 🎼: ${title}
