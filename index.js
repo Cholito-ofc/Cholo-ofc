@@ -411,8 +411,12 @@ if (update.action === "add" && welcomeActivo) {
 
     let textoFinal = "";
     if (customMessage) {
-      // Si hay mensaje personalizado, reemplaza @user por la mención real
-      textoFinal = customMessage.replace(/@user/gi, mention);
+      // Si el mensaje personalizado tiene @user, reemplaza; si no, añade la mención al inicio
+      if (/(@user)/gi.test(customMessage)) {
+        textoFinal = customMessage.replace(/@user/gi, mention);
+      } else {
+        textoFinal = `${mention} ${customMessage}`;
+      }
     } else {
       // Si no hay mensaje personalizado, solo manda la descripción del grupo
       let groupDesc = "";
@@ -428,7 +432,7 @@ if (update.action === "add" && welcomeActivo) {
     await sock.sendMessage(update.id, {
       image: { url: profilePicUrl },
       caption: textoFinal,
-      mentions: [participant]
+      mentions: [participant] // SIEMPRE etiqueta al usuario
     });
   }
 }
