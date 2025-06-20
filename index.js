@@ -413,9 +413,9 @@ if (update.action === "add" && welcomeActivo) {
     if (customMessage) {
       // Si el mensaje personalizado tiene @user, reemplaza; si no, añade la mención al inicio
       if (/(@user)/gi.test(customMessage)) {
-        textoFinal = customMessage.replace(/@user/gi, mention);
+        textoFinal = `👋🏻 ${customMessage.replace(/@user/gi, mention)}`;
       } else {
-        textoFinal = `${mention} ${customMessage}`;
+        textoFinal = `👋🏻 ${mention} ${customMessage}`;
       }
     } else {
       // Si no hay mensaje personalizado, solo manda la descripción del grupo
