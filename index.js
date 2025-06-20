@@ -441,28 +441,39 @@ if (update.action === "add" && welcomeActivo) {
 if (update.action === "remove" && despedidasActivo) {
   for (const participant of update.participants) {
     const mention = `@${participant.split("@")[0]}`;
-    const mensajeTexto = farewellTexts[Math.floor(Math.random() * farewellTexts.length)];
-    const option = Math.random();
+    // Carga el mensaje personalizado desde el archivo byemsgs.json
+    let customBye = "";
+    try {
+      const data = fs.existsSync("./byemsgs.json")
+        ? JSON.parse(fs.readFileSync("./byemsgs.json", "utf-8"))
+        : {};
+      customBye = data[update.id];
+    } catch (e) {}
 
-    let profilePicUrl;
+    let profilePicUrl = "https://cdn.russellxz.click/d9d547b6.jpeg";
     try {
       profilePicUrl = await sock.profilePictureUrl(participant, "image");
-    } catch (err) {
-      profilePicUrl = "https://cdn.russellxz.click/2486b9cc.jpeg";
+    } catch (err) {}
+
+    // Mensaje predeterminado con cuadritos
+    const defaultBye = `╔═══════════════════\n║  👋  Hasta pronto, ${mention}!\n║  Esperamos verte de nuevo en el grupo.\n╚═══════════════════`;
+
+    // Usa el personalizado si existe, si no el predeterminado
+    let byeText;
+    if (customBye) {
+      // Si el mensaje personalizado tiene @user, lo reemplaza; si no, añade la mención al inicio
+      byeText = /@user/gi.test(customBye)
+        ? customBye.replace(/@user/gi, mention)
+        : `${mention} ${customBye}`;
+    } else {
+      byeText = defaultBye;
     }
 
-    if (option < 0.5) {
-      await sock.sendMessage(update.id, {
-        image: { url: profilePicUrl },
-        caption: `👋 ${mention}\n\n${mensajeTexto}`,
-        mentions: [participant]
-      });
-    } else {
-      await sock.sendMessage(update.id, {
-        text: `👋 ${mention}\n\n${mensajeTexto}`,
-        mentions: [participant]
-      });
-    }
+    await sock.sendMessage(update.id, {
+      image: { url: profilePicUrl },
+      caption: byeText,
+      mentions: [participant]
+    });
   }
 }
 // **************** FIN LÓGICA BIENVENIDA/DESPEDIDA ****************
