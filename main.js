@@ -3939,15 +3939,6 @@ case 'menu': {
 ║➣ ${global.prefix}𝗆𝖾𝗇𝗎𝗋𝗉𝗀
 ╚══════════════⦊
 
-╔═≪ 𝗖𝗢𝗡𝗧𝗘𝗡𝗜𝗗𝗢 🔞 ≫
-║➣ ${global.prefix}𝗏𝗂𝖽𝖾𝗈𝗑𝗑𝗑
-║➣ ${global.prefix}𝗉𝗈𝗋𝗇𝗈𝗅𝗈𝗅𝗂
-║➣ ${global.prefix}𝗇𝗌𝖿𝗐𝗇𝖾𝗄𝗈
-║➣ ${global.prefix}𝗐𝖺𝗂𝖿𝗎
-║➣ ${global.prefix}𝗇𝖾𝗄𝗈
-║➣ ${global.prefix}𝗇𝗌𝖿𝗐𝗐𝖺𝗂𝖿𝗎
-╚══════════════⦊
-
 > 🧑🏻‍💻Dueño: Sergio-Bot
 ━━━━━━━━━━━━━━━`;
 
