@@ -10751,7 +10751,7 @@ case 'verdad': {
 
         await sock.sendMessage(msg.key.remoteJid, {
             image: { url: 'https://cdn.russellxz.click/cb9701a5.jpeg' },
-            caption: `𝘏𝘢𝘴 𝘦𝘴𝘤𝘰𝘨𝘪𝘥𝘰 *𝘝𝘌𝘙𝘋𝘈𝘋*\n\n╱╲❀╱╲╱╲❀╱╲╱╲❀╱╲\n◆ ${verdad}\n╲╱❀╲╱╲╱❀╲╱╲╱❀╲╱\n\n© cortana 2.0 Bot`
+            caption: `𝘏𝘢𝘴 𝘦𝘴𝘤𝘰𝘨𝘪𝘥𝘰 *𝘝𝘌𝘙𝘋𝘈𝘋*\n\n╱╲❀╱╲╱╲❀╱╲╱╲❀╱╲\n◆ ${verdad}\n╲╱❀╲╱╲╱❀╲╱╲╱❀╲╱\n\n© SergioBot`
         }, { quoted: msg });
 
         // ✅ Reacción de éxito
