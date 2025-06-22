@@ -1,22 +1,5 @@
 const handler = async (msg, { conn, args }) => {
   const chatId = msg.key.remoteJid;
-  const sender = msg.key.participant || msg.key.remoteJid;
-  const senderNum = sender.replace(/[^0-9]/g, "");
-  const isOwner = global.owner.some(([id]) => id === senderNum);
-  const isFromMe = msg.key.fromMe;
-
-  if (!chatId.endsWith("@g.us")) {
-    return conn.sendMessage(chatId, { text: "❌ Este comando solo puede usarse en grupos." }, { quoted: msg });
-  }
-
-  const meta = await conn.groupMetadata(chatId);
-  const isAdmin = meta.participants.find(p => p.id === sender)?.admin;
-
-  if (!isAdmin && !isOwner && !isFromMe) {
-    return conn.sendMessage(chatId, {
-      text: "❌ Solo *admins* o *el dueño del bot* pueden usar este comando."
-    }, { quoted: msg });
-  }
 
   const horaTexto = args.join(" ").trim();
   if (!horaTexto) {
@@ -42,7 +25,7 @@ const handler = async (msg, { conn, args }) => {
 
   const zonas = [
     { pais: "🇲🇽 MÉXICO", offset: 0 },
-    { pais: "🇨🇴 COLOMBIA", offset: 1 },
+    { pais: "🇨🇴 COLOMBIA", offset: 0 },
     { pais: "🇵🇪 PERÚ", offset: 0 },
     { pais: "🇵🇦 PANAMÁ", offset: 0 },
     { pais: "🇸🇻 EL SALVADOR", offset: 0 },
@@ -58,30 +41,27 @@ const handler = async (msg, { conn, args }) => {
     return `${z.pais} : ${to12Hour(newH, newM)}`;
   }).join("\n");
 
-  await conn.sendMessage(chatId, { react: { text: '🎮', key: msg.key } });
+  const textoFinal =
+`*4 𝐕𝐒 4 - ESCUADRA ÚNICA*
 
-  // Solo los primeros 6 usuarios (excluyendo el bot)
-  const participantes = meta.participants.filter(p => p.id !== conn.user.id);
-  if (participantes.length < 6) {
-    return conn.sendMessage(chatId, {
-      text: "⚠️ Se necesitan al menos *6 usuarios* para formar una escuadra y suplentes."
-    }, { quoted: msg });
-  }
+⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎
+${horaMsg}
 
-  // Selección directa: 4 titulares y 2 suplentes
-  const escuadra = participantes.slice(0, 4);
-  const suplentes = participantes.slice(4, 6);
+➥ 𝐌𝐎𝐃𝐀𝐋𝐈𝐃𝐀𝐃: 🔫 Clásico
+➥ 𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 𝗧𝗜𝗧𝗨𝗟𝗔𝗥 (APÚNTATE):
+👑 ┇ 
+🥷🏻 ┇ 
+🥷🏻 ┇ 
+🥷🏻 ┇ 
 
-  const renderJugadores = (arr) => arr.map((u, i) => `${i === 0 ? "👑" : "🥷🏻"} ┇ @${u.id.split("@")[0]}`).join("\n");
-
-  const textoFinal = `*4 𝐕𝐒 4 - ESCUADRA ÚNICA*\n\n⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎\n${horaMsg}\n\n➥ 𝐌𝐎𝐃𝐀𝐋𝐈𝐃𝐀𝐃: 🔫 Clásico\n➥ 𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 𝗧𝗜𝗧𝗨𝗟𝗔𝗥:\n\n${renderJugadores(escuadra)}\n\n➥ 𝗦𝗨𝗣𝗟𝗘𝗡𝗧𝗘𝗦:\n${renderJugadores(suplentes)}`;
-
-  const mentions = [...escuadra, ...suplentes].map(p => p.id);
+➥ 𝗦𝗨𝗣𝗟𝗘𝗡𝗧𝗘𝗦 (APÚNTATE):
+🥷🏻 ┇ 
+🥷🏻 ┇ 
+`;
 
   await conn.sendMessage(chatId, {
-    text: textoFinal,
-    mentions
-  });
+    text: textoFinal
+  }, { quoted: msg });
 };
 
 handler.command = ['4vs4'];
