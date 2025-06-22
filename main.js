@@ -12157,7 +12157,7 @@ case 'rpg': {
    *${global.prefix}minar*, *${global.prefix}picar*, *${global.prefix}crime*, *${global.prefix}work*,  
    *${global.prefix}claim*, *${global.prefix}cofre*, *${global.prefix}minar2*, *${global.prefix}robar*  
 
-🚀 ¡Prepárate para la aventura en *Cortana 2.0*! 🏆`;
+🚀 ¡Prepárate para la aventura en *SergioBot*! 🏆`;
 
 await sock.sendMessage(msg.key.remoteJid, { edit: registroMensaje.key, text: "✅ *¡Registro completado!* Generando tu tarjeta de jugador..." }); 
 await new Promise(resolve => setTimeout(resolve, 2000)); 
@@ -13004,7 +13004,7 @@ case 'tiendaper': {
 
         // Enviar mensaje con imagen estática 🖼️
 await sock.sendMessage(msg.key.remoteJid, { 
-    image: { url: "https://cdn.russellxz.click/1e23db7d.jpeg" }, // Ahora como imagen
+    image: { url: "https://cdn.russellxz.click/a4c89867.jpeg" }, // Ahora como imagen
     caption: mensaje
 }, { quoted: msg });
 
