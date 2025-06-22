@@ -25,7 +25,7 @@ const handler = async (msg, { conn, args }) => {
     }, { quoted: msg });
   }
 
-  // Convertir la hora ingresada a formato 24h base México
+  // Conversión de hora
   const to24Hour = (str) => {
     let [time, modifier] = str.toLowerCase().split(/(am|pm)/);
     let [h, m] = time.split(":").map(n => parseInt(n));
@@ -33,18 +33,16 @@ const handler = async (msg, { conn, args }) => {
     if (modifier === 'am' && h === 12) h = 0;
     return { h, m: m || 0 };
   };
-
   const to12Hour = (h, m) => {
     const suffix = h >= 12 ? 'pm' : 'am';
     h = h % 12 || 12;
     return `${h}:${m.toString().padStart(2, '0')}${suffix}`;
   };
-
   const base = to24Hour(horaTexto);
 
   const zonas = [
     { pais: "🇲🇽 MÉXICO", offset: 0 },
-    { pais: "🇨🇴 COLOMBIA", offset: 0 },
+    { pais: "🇨🇴 COLOMBIA", offset: 1 },
     { pais: "🇵🇪 PERÚ", offset: 0 },
     { pais: "🇵🇦 PANAMÁ", offset: 0 },
     { pais: "🇸🇻 EL SALVADOR", offset: 0 },
@@ -62,45 +60,25 @@ const handler = async (msg, { conn, args }) => {
 
   await conn.sendMessage(chatId, { react: { text: '🎮', key: msg.key } });
 
+  // Solo los primeros 6 usuarios (excluyendo el bot)
   const participantes = meta.participants.filter(p => p.id !== conn.user.id);
-  if (participantes.length < 12) {
+  if (participantes.length < 6) {
     return conn.sendMessage(chatId, {
-      text: "⚠️ Se necesitan al menos *12 usuarios* para formar 2 escuadras y suplentes."
+      text: "⚠️ Se necesitan al menos *6 usuarios* para formar una escuadra y suplentes."
     }, { quoted: msg });
   }
 
-  const tempMsg = await conn.sendMessage(chatId, {
-    text: "🎮 Preparando escuadras de Free Fire..."
-  }, { quoted: msg });
-
-  const pasos = [
-    "🧠 Pensando estrategias...",
-    "🎲 Mezclando nombres...",
-    "📊 Seleccionando jugadores...",
-    "✅ ¡Listo! Escuadras generadas:"
-  ];
-
-  for (let i = 0; i < pasos.length; i++) {
-    await new Promise(r => setTimeout(r, 1500));
-    await conn.sendMessage(chatId, {
-      edit: tempMsg.key,
-      text: pasos[i]
-    });
-  }
-
-  const shuffled = participantes.sort(() => Math.random() - 0.5);
-  const escuadra1 = shuffled.slice(0, 4);
-  const escuadra2 = shuffled.slice(4, 8);
-  const suplentes = shuffled.slice(8, 12);
+  // Selección directa: 4 titulares y 2 suplentes
+  const escuadra = participantes.slice(0, 4);
+  const suplentes = participantes.slice(4, 6);
 
   const renderJugadores = (arr) => arr.map((u, i) => `${i === 0 ? "👑" : "🥷🏻"} ┇ @${u.id.split("@")[0]}`).join("\n");
 
-  const textoFinal = `*4 𝐕𝐄𝐑𝐒𝐔𝐒 4*\n\n⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎\n${horaMsg}\n\n➥ 𝐌𝐎𝐃𝐀𝐋𝐈𝐃𝐀𝐃: 🔫 Clásico\n➥ 𝐉𝐔𝐆𝐀𝐃𝐎𝐑𝐄𝐒:\n\n      𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 1\n\n${renderJugadores(escuadra1)}\n\n    ㅤʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:\n${renderJugadores(suplentes.slice(0, 2))}\n\n     𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 2\n\n${renderJugadores(escuadra2)}\n\n    ㅤʚ 𝐒𝐔𝐏𝐋𝐄𝐍𝐓𝐄𝐒:\n${renderJugadores(suplentes.slice(2))}`;
+  const textoFinal = `*4 𝐕𝐒 4 - ESCUADRA ÚNICA*\n\n⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎\n${horaMsg}\n\n➥ 𝐌𝐎𝐃𝐀𝐋𝐈𝐃𝐀𝐃: 🔫 Clásico\n➥ 𝗘𝗦𝗖𝗨𝗔𝗗𝗥𝗔 𝗧𝗜𝗧𝗨𝗟𝗔𝗥:\n\n${renderJugadores(escuadra)}\n\n➥ 𝗦𝗨𝗣𝗟𝗘𝗡𝗧𝗘𝗦:\n${renderJugadores(suplentes)}`;
 
-  const mentions = [...escuadra1, ...escuadra2, ...suplentes].map(p => p.id);
+  const mentions = [...escuadra, ...suplentes].map(p => p.id);
 
   await conn.sendMessage(chatId, {
-    edit: tempMsg.key,
     text: textoFinal,
     mentions
   });
