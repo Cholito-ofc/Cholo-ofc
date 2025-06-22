@@ -38,7 +38,7 @@ const handler = async (msg, { conn, args }) => {
   }).join("\n");
 
   const textoFinal =
-`*4 𝐕𝐒 4 - ESCUADRA ÚNICA*
+`*24 𝐕𝐒 24 - MAPA GRANDE*
 
 ⏱ 𝐇𝐎𝐑𝐀𝐑𝐈𝐎
 ${horaMsg}
