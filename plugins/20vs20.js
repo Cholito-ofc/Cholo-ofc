@@ -95,5 +95,5 @@ ${horaMsg}
   }, { quoted: msg });
 };
 
-handler.command = ['6vs6'];
+handler.command = ['20vs20'];
 module.exports = handler;
