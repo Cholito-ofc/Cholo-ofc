@@ -23,15 +23,11 @@ const handler = async (msg, { conn, args }) => {
   };
   const base = to24Hour(horaTexto);
 
+  // Solo México, Colombia, Venezuela
   const zonas = [
     { pais: "🇲🇽 MÉXICO", offset: 0 },
-    { pais: "🇨🇴 COLOMBIA", offset: 0 },
-    { pais: "🇵🇪 PERÚ", offset: 0 },
-    { pais: "🇵🇦 PANAMÁ", offset: 0 },
-    { pais: "🇸🇻 EL SALVADOR", offset: 0 },
-    { pais: "🇨🇱 CHILE", offset: 2 },
-    { pais: "🇦🇷 ARGENTINA", offset: 2 },
-    { pais: "🇪🇸 ESPAÑA", offset: 7 }
+    { pais: "🇨🇴 COLOMBIA", offset: 1 },
+    { pais: "🇻🇪 VENEZUELA", offset: 2 }
   ];
 
   const horaMsg = zonas.map(z => {
