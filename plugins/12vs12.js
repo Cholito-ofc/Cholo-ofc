@@ -77,5 +77,5 @@ ${horaMsg}
   }, { quoted: msg });
 };
 
-handler.command = ['6vs6'];
+handler.command = ['12vs12'];
 module.exports = handler;
