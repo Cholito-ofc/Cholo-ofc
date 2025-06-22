@@ -76,7 +76,7 @@ const blockIfNotInPrueba = async (msg, { command }) => {
   // Si el comando está permitido
   if (command && prueba.comandosPermitidos.includes(command)) return !0;
 
-  // Bloquea otros comandos
+  // Bloquea otroos comandos
   return !1;
 };
 
