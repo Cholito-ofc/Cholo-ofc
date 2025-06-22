@@ -12979,7 +12979,7 @@ case 'tiendaper': {
         }
 
         // Explicación de compra al inicio 📜
-        let mensaje = `🏪 *ᴛɪᴇɴᴅᴀ ᴅᴇ ᴘᴇʀsᴏɴᴀᴊᴇs - 𝚌𝚘𝚛𝚝𝚊𝚗𝚊 𝟸.𝟶* 🏪\n\n`;
+        let mensaje = `🏪 *ᴛɪᴇɴᴅᴀ ᴅᴇ ᴘᴇʀsᴏɴᴀᴊᴇs - SergioBot* 🏪\n\n`;
         mensaje += `🎭 *Compra personajes de anime y mejora sus habilidades.*\n`;
         mensaje += `🛒 *Para comprar un personaje usa:* \n`;
         mensaje += `   📌 \`${global.prefix}comprar <nombre_personaje>\`\n`;
