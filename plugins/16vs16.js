@@ -86,5 +86,5 @@ ${horaMsg}
   }, { quoted: msg });
 };
 
-handler.command = ['6vs6'];
+handler.command = ['16vs16'];
 module.exports = handler;
